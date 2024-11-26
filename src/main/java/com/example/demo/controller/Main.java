@@ -6,10 +6,10 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 
 public class Main extends Application {
-//testing
+
 	private static final int SCREEN_WIDTH = 1300;
 	private static final int SCREEN_HEIGHT = 750;
-	private static final String TITLE = "Sky Battle";
+	private static final String TITLE = "2024: Sky Battle";
 	private Controller myController;
 
 	@Override
