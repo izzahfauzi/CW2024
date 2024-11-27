@@ -1,4 +1,4 @@
-package levels;
+package com.example.demo.levels;
 
 import com.example.demo.actors.Boss;
 

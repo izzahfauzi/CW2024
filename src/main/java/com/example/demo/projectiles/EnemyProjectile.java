@@ -1,4 +1,4 @@
-package projectiles;
+package com.example.demo.projectiles;
 
 public class EnemyProjectile extends Projectile {
 	
