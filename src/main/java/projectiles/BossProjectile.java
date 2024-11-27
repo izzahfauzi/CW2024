@@ -1,4 +1,4 @@
-package com.example.demo;
+package projectiles;
 
 public class BossProjectile extends Projectile {
 	

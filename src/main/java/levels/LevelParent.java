@@ -1,8 +1,11 @@
-package com.example.demo;
+package levels;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.example.demo.ActiveActorDestructible;
+import com.example.demo.actors.UserPlane;
+import com.example.demo.actors.FighterPlane;
 import javafx.animation.*;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
@@ -220,7 +223,7 @@ public abstract class LevelParent extends Observable {
 
 	protected void loseGame() {
 		timeline.stop();
-		levelView.showGameOverImage();
+		levelView.showGameOverImage(0.5,0.5);
 	}
 
 	protected UserPlane getUser() {
