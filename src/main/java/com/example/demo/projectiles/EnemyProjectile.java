@@ -2,8 +2,8 @@ package com.example.demo.projectiles;
 
 public class EnemyProjectile extends Projectile {
 	
-	private static final String IMAGE_NAME = "enemyFire.png";
-	private static final int IMAGE_HEIGHT = 25;
+	private static final String IMAGE_NAME = "fireenemy.png";
+	private static final int IMAGE_HEIGHT = 30;
 	private static final int HORIZONTAL_VELOCITY = -10;
 
 	public EnemyProjectile(double initialXPos, double initialYPos) {
