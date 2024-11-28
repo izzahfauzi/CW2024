@@ -13,15 +13,15 @@ public class Boss extends FighterPlane {
 	private static final double INITIAL_Y_POSITION = 400.0;
 	private static final double PROJECTILE_Y_POSITION_OFFSET = 75.0;
 	private static final double BOSS_FIRE_RATE = .04;
-	private static final double BOSS_SHIELD_PROBABILITY = 1.0; //for testing uses
+	private static final double BOSS_SHIELD_PROBABILITY = 0.002;
 	private static final int IMAGE_HEIGHT = 65;
 	private static final int VERTICAL_VELOCITY = 8;
 	private static final int HEALTH = 5; //initially 100 but i cant win
 	private static final int MOVE_FREQUENCY_PER_CYCLE = 5;
 	private static final int ZERO = 0;
 	private static final int MAX_FRAMES_WITH_SAME_MOVE = 10;
-	private static final int Y_POSITION_UPPER_BOUND = -100;
-	private static final int Y_POSITION_LOWER_BOUND = 475;
+	private static final int Y_POSITION_UPPER_BOUND = 65;
+	private static final int Y_POSITION_LOWER_BOUND = 650;
 	private static final int MAX_FRAMES_WITH_SHIELD = 500;
 	private final List<Integer> movePattern;
 	private final LevelViewLevelTwo levelView;
@@ -48,9 +48,11 @@ public class Boss extends FighterPlane {
 	@Override
 	public void updatePosition() {
 		double initialTranslateY = getTranslateY();
+
 		moveVertically(getNextMove());
 		double currentPosition = getLayoutY() + getTranslateY();
 		if (currentPosition < Y_POSITION_UPPER_BOUND || currentPosition > Y_POSITION_LOWER_BOUND) {
+			System.out.println("Out of bounds");
 			setTranslateY(initialTranslateY);
 		}
 
@@ -122,11 +124,13 @@ public class Boss extends FighterPlane {
 	}
 
 	private void activateShield() {
+		System.out.println("Shield activated");
 		isShielded = true;
 		levelView.showShield();
 	}
 
 	private void deactivateShield() {
+		System.out.println("Shield deactivated");
 		isShielded = false;
 		framesWithShieldActivated = 0;
 		levelView.hideShield();

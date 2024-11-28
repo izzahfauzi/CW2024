@@ -29,15 +29,13 @@ public class Controller implements Observer {
 
 	private void goToLevel(String className) throws ClassNotFoundException, NoSuchMethodException, SecurityException,
 			InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-			System.out.println("Going to level " + className); //debugging statement
+			System.out.println("Going to level " + className);
 
 			Class<?> myClass = Class.forName(className);
 			Constructor<?> constructor = myClass.getConstructor(double.class, double.class);
 			LevelParent myLevel = (LevelParent) constructor.newInstance(stage.getHeight(), stage.getWidth());
 
-			myLevel.addObserver(this);
-
-			Scene scene = myLevel.initializeScene();
+			myLevel.addObserver(this);Scene scene = myLevel.initializeScene();
 			stage.setScene(scene);
 			myLevel.startGame();
 
@@ -46,7 +44,7 @@ public class Controller implements Observer {
 	@Override
 	public void update(Observable arg0, Object arg1) {
 		String levelName = (String) arg1;
-		System.out.println("Transitioning to " + levelName); //debugging statement
+		System.out.println("Transitioning to " + levelName);
 		try {
 			goToLevel((String) arg1);
 		} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException
