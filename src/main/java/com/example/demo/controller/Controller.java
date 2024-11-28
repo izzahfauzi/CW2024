@@ -35,7 +35,9 @@ public class Controller implements Observer {
 			Constructor<?> constructor = myClass.getConstructor(double.class, double.class);
 			LevelParent myLevel = (LevelParent) constructor.newInstance(stage.getHeight(), stage.getWidth());
 
-			myLevel.addObserver(this);Scene scene = myLevel.initializeScene();
+			myLevel.addObserver(this);
+
+			Scene scene = myLevel.initializeScene();
 			stage.setScene(scene);
 			myLevel.startGame();
 
