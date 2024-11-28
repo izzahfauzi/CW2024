@@ -93,7 +93,6 @@ public abstract class LevelParent extends Observable {
 		handleEnemyProjectileCollisions();
 		handlePlaneCollisions();
 		removeAllDestroyedActors();
-		updateKillCount();
 		updateLevelView();
 		checkIfGameOver();
 	}
@@ -174,7 +173,17 @@ public abstract class LevelParent extends Observable {
 	}
 
 	private void handleUserProjectileCollisions() {
-		handleCollisions(userProjectiles, enemyUnits);
+			for (ActiveActorDestructible projectile : userProjectiles){
+				for (ActiveActorDestructible enemy : enemyUnits){
+					if (projectile.getBoundsInParent().intersects(enemy.getBoundsInParent())){
+						enemy.takeDamage();
+						projectile.destroy();
+						if (enemy.isDestroyed()){
+							user.incrementKillCount();
+						}
+					}
+				}
+		}
 	}
 
 	private void handleEnemyProjectileCollisions() {
@@ -195,25 +204,20 @@ public abstract class LevelParent extends Observable {
 
 	private void handleEnemyPenetration() {
 		for (ActiveActorDestructible enemy : enemyUnits) {
-			if (enemyHasPenetratedDefenses(enemy)) {
+			if (enemy.getLayoutX() + enemy.getTranslateX() > screenWidth) {
 				user.takeDamage();
 				enemy.destroy();
+				updateNumberOfEnemies();
 			}
 		}
 	}
 
+	private void updateNumberOfEnemies() {
+		currentNumberOfEnemies = enemyUnits.size();
+	}
+
 	private void updateLevelView() {
 		levelView.removeHearts(user.getHealth());
-	}
-
-	private void updateKillCount() {
-		for (int i = 0; i < currentNumberOfEnemies - enemyUnits.size(); i++) {
-			user.incrementKillCount();
-		}
-	}
-
-	private boolean enemyHasPenetratedDefenses(ActiveActorDestructible enemy) {
-		return Math.abs(enemy.getTranslateX()) > screenWidth;
 	}
 
 	protected void winGame() {
@@ -253,10 +257,6 @@ public abstract class LevelParent extends Observable {
 
 	protected boolean userIsDestroyed() {
 		return user.isDestroyed();
-	}
-
-	private void updateNumberOfEnemies() {
-		currentNumberOfEnemies = enemyUnits.size();
 	}
 
 }

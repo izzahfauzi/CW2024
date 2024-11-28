@@ -4,7 +4,7 @@ import com.example.demo.actors.Boss;
 
 public class LevelTwo extends LevelParent {
 
-	private static final String BACKGROUND_IMAGE_NAME = "/com/example/demo/images/sky2.png";
+	private static final String BACKGROUND_IMAGE_NAME = "/com/example/demo/images/sky1.png";
 	private static final int PLAYER_INITIAL_HEALTH = 5;
 	private final Boss boss;
 	private LevelViewLevelTwo levelView;

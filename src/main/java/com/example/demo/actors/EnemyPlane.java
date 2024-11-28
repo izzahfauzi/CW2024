@@ -12,6 +12,7 @@ public class EnemyPlane extends FighterPlane {
 	private static final double PROJECTILE_Y_POSITION_OFFSET = 50.0;
 	private static final int INITIAL_HEALTH = 1;
 	private static final double FIRE_RATE = .01;
+	private final double screenWidth = 1300;
 
 	public EnemyPlane(double initialXPos, double initialYPos) {
 		super(IMAGE_NAME, IMAGE_HEIGHT, initialXPos, initialYPos, INITIAL_HEALTH);
@@ -20,6 +21,13 @@ public class EnemyPlane extends FighterPlane {
 	@Override
 	public void updatePosition() {
 		moveHorizontally(HORIZONTAL_VELOCITY);
+		if (getLayoutX() + getTranslateX() < 0 || getLayoutX() + getTranslateX() > getScreenWidth()) {
+			this.destroy();
+		}
+	}
+
+	protected double getScreenWidth() {
+		return screenWidth;
 	}
 
 	@Override

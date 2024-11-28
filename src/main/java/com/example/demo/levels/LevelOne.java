@@ -5,7 +5,7 @@ import com.example.demo.actors.EnemyPlane;
 
 public class LevelOne extends LevelParent {
 	
-	private static final String BACKGROUND_IMAGE_NAME = "/com/example/demo/images/sky2.png";
+	private static final String BACKGROUND_IMAGE_NAME = "/com/example/demo/images/sky1.png";
 	private static final String NEXT_LEVEL = "com.example.demo.levels.LevelTwo";
 	private static final int TOTAL_ENEMIES = 5;
 	private static final int KILLS_TO_ADVANCE = 10;
@@ -32,12 +32,14 @@ public class LevelOne extends LevelParent {
 
 	@Override
 	protected void spawnEnemyUnits() {
-		int currentNumberOfEnemies = getCurrentNumberOfEnemies();
-		for (int i = 0; i < TOTAL_ENEMIES - currentNumberOfEnemies; i++) {
-			if (Math.random() < ENEMY_SPAWN_PROBABILITY) {
-				double newEnemyInitialYPosition = Math.random() * getEnemyMaximumYPosition();
-				ActiveActorDestructible newEnemy = new EnemyPlane(getScreenWidth(), newEnemyInitialYPosition);
-				addEnemyUnit(newEnemy);
+		if (getUser().getNumberOfKills() < KILLS_TO_ADVANCE) {
+			int totalEnemiesToSpawn = TOTAL_ENEMIES - getCurrentNumberOfEnemies();
+			for (int i = 0; i < totalEnemiesToSpawn; i++) {
+				if (Math.random() < ENEMY_SPAWN_PROBABILITY) {
+					double newEnemyInitialYPosition = Math.random() * getEnemyMaximumYPosition();
+					ActiveActorDestructible newEnemy = new EnemyPlane(getScreenWidth(), newEnemyInitialYPosition);
+					addEnemyUnit(newEnemy);
+				}
 			}
 		}
 	}
