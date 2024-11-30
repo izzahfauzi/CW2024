@@ -19,8 +19,8 @@ public abstract class MenuParent extends Observable {
     private final Timeline timeline;
     private final Scene scene;
     protected final ImageView background;
-    private final double screenWidth;
-    private final double screenHeight;
+    protected final double screenWidth;
+    protected final double screenHeight;
 
     public MenuParent(Stage stage, String backgroundImageName, double screenHeight, double screenWidth) {
         this.stage = stage;
@@ -50,14 +50,12 @@ public abstract class MenuParent extends Observable {
         root.getChildren().add(background);
     }
 
-    protected Button buttonImage(String buttonImagePath, String hoverImagePath, EventHandler eventHandler, double posX, double posY) {
+    protected Button buttonImage(String buttonImagePath, String hoverImagePath, EventHandler eventHandler, double posX, double posY, double buttonWidth, double buttonHeight) {
 
         Image image = new Image(getClass().getResource(buttonImagePath).toExternalForm());
-        double imageWidth = image.getWidth();
-        double imageHeight = image.getHeight();
 
-        double adjustedButtonWidth = Math.min(imageWidth, screenWidth * 0.8);
-        double adjustedButtonHeight = imageHeight * (adjustedButtonWidth / imageWidth);
+        double adjustedButtonWidth = buttonWidth;
+        double adjustedButtonHeight = buttonHeight  ;
 
         ImageView buttonImageView = new ImageView(image);
         buttonImageView.setFitWidth(adjustedButtonWidth);
@@ -73,25 +71,26 @@ public abstract class MenuParent extends Observable {
 
         button.setOnAction(eventHandler);
 
-        button.setOnMouseEntered(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                Image hoverImage = new Image(getClass().getResource(hoverImagePath).toExternalForm());
-                ImageView hoverImageView = new ImageView(hoverImage);
-                hoverImageView.setFitWidth(adjustedButtonWidth);
-                hoverImageView.setFitHeight(adjustedButtonHeight);
-                hoverImageView.setPreserveRatio(true);
-                button.setGraphic(hoverImageView);
-            }
-        });
+        if (hoverImagePath != null) {
+            button.setOnMouseEntered(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    Image hoverImage = new Image(getClass().getResource(hoverImagePath).toExternalForm());
+                    ImageView hoverImageView = new ImageView(hoverImage);
+                    hoverImageView.setFitWidth(adjustedButtonWidth);
+                    hoverImageView.setFitHeight(adjustedButtonHeight);
+                    hoverImageView.setPreserveRatio(true);
+                    button.setGraphic(hoverImageView);
+                }
+            });
 
-        button.setOnMouseExited(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                button.setGraphic(buttonImageView);
-            }
-        });
-
+            button.setOnMouseExited(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    button.setGraphic(buttonImageView);
+                }
+            });
+        }
         root.getChildren().add(button);
 
         return button;
@@ -100,6 +99,13 @@ public abstract class MenuParent extends Observable {
     public void goToNextLevel(String levelName) {
         setChanged();
         notifyObservers(levelName);
+
+        timeline.stop();
+    }
+
+    public void goToMenu(String menuName) {
+        setChanged();
+        notifyObservers(menuName);
 
         timeline.stop();
     }

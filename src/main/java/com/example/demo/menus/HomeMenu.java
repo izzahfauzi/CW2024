@@ -3,6 +3,7 @@ package com.example.demo.menus;
 import javafx.stage.Stage;
 import javafx.event.EventHandler;
 import javafx.event.ActionEvent;
+import javafx.scene.image.Image;
 
 public class HomeMenu extends MenuParent {
     private static final String BACKGROUND_IMAGE_NAME = "/com/example/demo/images/homemenu.png";
@@ -15,12 +16,15 @@ public class HomeMenu extends MenuParent {
         double posX = (stage.getWidth() - 600) / 2;
         double posY = (stage.getHeight() - 100) / 2;
 
+        double playButtonWidth = 549;
+        double playButtonHeight = 48;
+
         buttonImage(PLAY_BUTTON1, PLAY_BUTTON2, new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                goToNextLevel("com.example.demo.levels.LevelOne");
+                goToNextLevel("LevelOne");
             }
-        }, posX, posY);
+        }, posX, posY, playButtonWidth, playButtonHeight);
     }
 
 

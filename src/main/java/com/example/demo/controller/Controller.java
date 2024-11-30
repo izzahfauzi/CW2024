@@ -49,7 +49,6 @@ public class Controller implements Observer {
 		System.out.println("Going to menu " + menuClassName);
 
 		Class<?> myClass = Class.forName(menuClassName);
-
 		Constructor<?> constructor = myClass.getConstructor(Stage.class, double.class, double.class);
 		MenuParent myMenu = (MenuParent) constructor.newInstance(stage, stage.getWidth(), stage.getHeight());
 
@@ -62,14 +61,11 @@ public class Controller implements Observer {
 	@Override
 	public void update(Observable arg0, Object arg1) {
 		String Name = (String) arg1;
-		System.out.println("Transitioning to " + Name);
 		try {
-			if (Name.equals("WinMenu")) {
-				goToMenu("com.example.demo.menus.WinMenu");
-			} else if (Name.equals("LoseMenu")) {
-				goToMenu("com.example.demo.menus.LoseMenu");
+			if (Name.contains("Menu")) {
+				goToMenu("com.example.demo.menus." + Name);
 			} else {
-				goToLevel(Name);
+				goToLevel("com.example.demo.levels." + Name);
 			}
 		} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException
 				 | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
