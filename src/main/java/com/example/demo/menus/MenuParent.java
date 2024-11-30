@@ -8,9 +8,9 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
+import javafx.scene.control.Button;
+import javafx.scene.input.MouseEvent;
 
 public abstract class MenuParent extends Observable {
 
@@ -18,18 +18,15 @@ public abstract class MenuParent extends Observable {
     private final Group root;
     private final Timeline timeline;
     private final Scene scene;
-    private final ImageView background;
+    protected final ImageView background;
     private final double screenWidth;
     private final double screenHeight;
-    private final double zoomFactor;
-    private static final String LEVEL_ONE = "com.example.demo.levels.LevelOne";
 
-    public MenuParent(Stage stage, String backgroundImageName, double screenHeight, double screenWidth, double zoomFactor) {
+    public MenuParent(Stage stage, String backgroundImageName, double screenHeight, double screenWidth) {
         this.stage = stage;
         this.timeline = new Timeline();
         this.screenHeight = screenHeight;
         this.screenWidth = screenWidth;
-        this.zoomFactor = zoomFactor;
 
         this.root = new Group();
         this.scene = new Scene(root, screenWidth, screenHeight);
@@ -37,43 +34,67 @@ public abstract class MenuParent extends Observable {
         this.background = new ImageView(new Image(getClass().getResource(backgroundImageName).toExternalForm()));
 
         initializeBackground();
-        initializeControls();
-
     }
 
     public Scene initializeScene() {
         return scene;
     }
 
+    protected void initializeControls() {
+    }
+
     private void initializeBackground() {
         background.setFocusTraversable(true);
         background.setPreserveRatio(true);
 
-        double imageWidth = background.getImage().getWidth();
-        double imageHeight = background.getImage().getHeight();
-
-        double scaleWidth = screenWidth / imageWidth;
-        double scaleHeight = screenHeight / imageHeight;
-
-        double scaleFactor = Math.min(scaleWidth, scaleHeight) * zoomFactor;;
-
-        background.setFitWidth(imageWidth * scaleFactor);
-        background.setFitHeight(imageHeight * scaleFactor);
-
         root.getChildren().add(background);
     }
 
-    private void initializeControls(){
-        timeline.stop();
-        background.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            public void handle(KeyEvent e) {
-                KeyCode kc = e.getCode();
-                if (kc == KeyCode.SPACE) {
-                    System.out.println("Space");
-                    goToNextLevel(LEVEL_ONE);
-                }
+    protected Button buttonImage(String buttonImagePath, String hoverImagePath, EventHandler eventHandler, double posX, double posY) {
+
+        Image image = new Image(getClass().getResource(buttonImagePath).toExternalForm());
+        double imageWidth = image.getWidth();
+        double imageHeight = image.getHeight();
+
+        double adjustedButtonWidth = Math.min(imageWidth, screenWidth * 0.8);
+        double adjustedButtonHeight = imageHeight * (adjustedButtonWidth / imageWidth);
+
+        ImageView buttonImageView = new ImageView(image);
+        buttonImageView.setFitWidth(adjustedButtonWidth);
+        buttonImageView.setFitHeight(adjustedButtonHeight);
+        buttonImageView.setPreserveRatio(true);
+
+        Button button = new Button();
+        button.setGraphic(buttonImageView);
+        button.setStyle("-fx-background-color: transparent;");
+
+        button.setLayoutX(posX);
+        button.setLayoutY(posY);
+
+        button.setOnAction(eventHandler);
+
+        button.setOnMouseEntered(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                Image hoverImage = new Image(getClass().getResource(hoverImagePath).toExternalForm());
+                ImageView hoverImageView = new ImageView(hoverImage);
+                hoverImageView.setFitWidth(adjustedButtonWidth);
+                hoverImageView.setFitHeight(adjustedButtonHeight);
+                hoverImageView.setPreserveRatio(true);
+                button.setGraphic(hoverImageView);
             }
         });
+
+        button.setOnMouseExited(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                button.setGraphic(buttonImageView);
+            }
+        });
+
+        root.getChildren().add(button);
+
+        return button;
     }
 
     public void goToNextLevel(String levelName) {
@@ -82,8 +103,6 @@ public abstract class MenuParent extends Observable {
 
         timeline.stop();
     }
-
-
 
 
 }
