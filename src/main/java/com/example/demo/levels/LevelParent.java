@@ -32,7 +32,6 @@ public abstract class LevelParent extends Observable {
 	private final List<ActiveActorDestructible> enemyUnits;
 	private final List<ActiveActorDestructible> userProjectiles;
 	private final List<ActiveActorDestructible> enemyProjectiles;
-	
 	private int currentNumberOfEnemies;
 	private final LevelView levelView;
 
@@ -54,6 +53,7 @@ public abstract class LevelParent extends Observable {
 		this.currentNumberOfEnemies = 0;
 		initializeTimeline();
 		friendlyUnits.add(user);
+
 	}
 
 	protected abstract void initializeFriendlyUnits();
@@ -82,6 +82,12 @@ public abstract class LevelParent extends Observable {
 
 		timeline.stop();
 	}
+	public void goToMenu(String menuName) {
+		setChanged();
+		notifyObservers(menuName);
+
+		timeline.stop();
+	}
 
 	private void updateScene() {
 		spawnEnemyUnits();
@@ -107,6 +113,12 @@ public abstract class LevelParent extends Observable {
 		background.setFocusTraversable(true);
 		background.setFitHeight(screenHeight);
 		background.setFitWidth(screenWidth);
+		root.getChildren().add(background);
+
+		initializeControls();
+	}
+
+	private void initializeControls(){
 		background.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			public void handle(KeyEvent e) {
 				KeyCode kc = e.getCode();
@@ -127,7 +139,6 @@ public abstract class LevelParent extends Observable {
 				if (kc == KeyCode.LEFT || kc == KeyCode.RIGHT || kc == KeyCode.A || kc == KeyCode.D) user.stopMoveHorizontal();
 			}
 		});
-		root.getChildren().add(background);
 	}
 
 	private void fireProjectile() {
@@ -222,12 +233,12 @@ public abstract class LevelParent extends Observable {
 
 	protected void winGame() {
 		timeline.stop();
-		levelView.showWinImage();
+		goToMenu("WinMenu");
 	}
 
 	protected void loseGame() {
 		timeline.stop();
-		levelView.showGameOverImage(0.5,0.5);
+		goToMenu("LoseMenu");
 	}
 
 	protected UserPlane getUser() {
