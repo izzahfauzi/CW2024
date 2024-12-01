@@ -21,7 +21,7 @@ public class LevelOne extends LevelParent {
 			loseGame();
 		}
 		else if (userHasReachedKillTarget())
-			goToNextLevel("LevelBoss");
+			goToNextLevel("LevelTwo");
 	}
 
 	@Override
@@ -38,7 +38,7 @@ public class LevelOne extends LevelParent {
 			for (int i = 0; i < totalEnemiesToSpawn; i++) {
 				if (Math.random() < ENEMY_SPAWN_PROBABILITY) {
 					double newEnemyInitialYPosition = Math.random() * getEnemyMaximumYPosition();
-					ActiveActorDestructible newEnemy = new EnemyPlane(getScreenWidth(), newEnemyInitialYPosition);
+					ActiveActorDestructible newEnemy = new EnemyPlane(getScreenWidth(), newEnemyInitialYPosition, false);
 					addEnemyUnit(newEnemy);
 				}
 			}
