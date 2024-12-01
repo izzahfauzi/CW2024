@@ -1,7 +1,7 @@
 package com.example.demo.actors;
 
 import com.example.demo.ActiveActorDestructible;
-import com.example.demo.levels.LevelViewLevelTwo;
+import com.example.demo.levels.LevelViewLevelBoss;
 import com.example.demo.projectiles.BossProjectile;
 
 import java.util.*;
@@ -24,7 +24,7 @@ public class Boss extends FighterPlane {
 	private static final int Y_POSITION_LOWER_BOUND = 650;
 	private static final int MAX_FRAMES_WITH_SHIELD = 500;
 	private final List<Integer> movePattern;
-	private final LevelViewLevelTwo levelView;
+	private final LevelViewLevelBoss levelView;
 	private boolean isShielded;
 	private int consecutiveMovesInSameDirection;
 	private int indexOfCurrentMove;
@@ -35,7 +35,7 @@ public class Boss extends FighterPlane {
 
 
 
-	public Boss(LevelViewLevelTwo levelView) {
+	public Boss(LevelViewLevelBoss levelView) {
 		super(IMAGE_NAME, IMAGE_HEIGHT, INITIAL_X_POSITION, INITIAL_Y_POSITION, HEALTH);
 		this.levelView = levelView;
 		movePattern = new ArrayList<>();

@@ -21,7 +21,7 @@ public class LevelOne extends LevelParent {
 			loseGame();
 		}
 		else if (userHasReachedKillTarget())
-			goToNextLevel("LevelTwo");
+			goToNextLevel("LevelBoss");
 	}
 
 	@Override
