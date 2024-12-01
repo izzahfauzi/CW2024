@@ -10,31 +10,35 @@ import java.util.List;
 public class EnemyPlane extends FighterPlane {
 
 	private static final String ENEMY_IMAGE = "enemyplane1.png";
-	private static final String SPECIAL_ENEMY_IMAGE = "enemyplane2.png";
 	private static final int IMAGE_HEIGHT = 60;
 	private static final int INITIAL_HORIZONTAL_VELOCITY = -6;
 	private static final int SPECIAL_HORIZONTAL_VELOCITY = -9;
+	private static final int TANK_HORIZONTAL_VELOCITY = -4;
 	private static final double PROJECTILE_X_POSITION_OFFSET = -100.0;
 	private static final double PROJECTILE_Y_POSITION_OFFSET = 50.0;
 	private static final int Y_POSITION_UPPER_BOUND = 65;
 	private static final int Y_POSITION_LOWER_BOUND = 650;
 	private static final int INITIAL_HEALTH = 1;
 	private static final int SPECIAL_INITIAL_HEALTH = 3;
+	private static final int TANK_INITIAL_HEALTH = 7;
 	private static final double FIRE_RATE = .01;
 	private final double screenWidth = 1300;
 	private boolean specialEnemy;
+	private boolean tankEnemy;
 	private static final int VERTICAL_VELOCITY = 5;
 	private List<Integer> movePattern;
 	private int consecutiveMovesInSameDirection;
 	private int indexOfCurrentMove;
 
-	public EnemyPlane(double initialXPos, double initialYPos, boolean specialEnemy) {
-		super(specialEnemy ? SPECIAL_ENEMY_IMAGE : ENEMY_IMAGE, IMAGE_HEIGHT, initialXPos, initialYPos, INITIAL_HEALTH);
+	public EnemyPlane(double initialXPos, double initialYPos, boolean specialEnemy, boolean tankEnemy) {
+		super(ENEMY_IMAGE, IMAGE_HEIGHT, initialXPos, initialYPos, INITIAL_HEALTH);
 		this.specialEnemy = specialEnemy;
 
 		initializeMovePattern();
 
-		if (specialEnemy) {
+		if (tankEnemy) {
+			setTankPlaneAttributes();
+		} else if (specialEnemy) {
 			setSpecialEnemyAttributes();
 		} else {
 			setNormalEnemyAttributes();
@@ -49,6 +53,11 @@ public class EnemyPlane extends FighterPlane {
 	private void setSpecialEnemyAttributes() {
 		this.health = SPECIAL_INITIAL_HEALTH;
 		this.horizontalVelocity = SPECIAL_HORIZONTAL_VELOCITY;
+	}
+
+	private void setTankPlaneAttributes() {
+		this.health = TANK_INITIAL_HEALTH;
+		this.horizontalVelocity = TANK_HORIZONTAL_VELOCITY;
 	}
 
 	@Override
