@@ -17,6 +17,7 @@ public class Controller implements Observer {
 
 	private static final String HOME_MENU = "com.example.demo.menus.HomeMenu";
 	private final Stage stage;
+	private LevelParent currentLevel;
 
 	public Controller(Stage stage) {
 		this.stage = stage;
@@ -33,15 +34,16 @@ public class Controller implements Observer {
 			InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		System.out.println("Going to level " + className);
 
+
 		Class<?> myClass = Class.forName(className);
 		Constructor<?> constructor = myClass.getConstructor(double.class, double.class);
-		LevelParent myLevel = (LevelParent) constructor.newInstance(stage.getHeight(), stage.getWidth());
+		currentLevel = (LevelParent) constructor.newInstance(stage.getHeight(), stage.getWidth());
 
-		myLevel.addObserver(this);
+		currentLevel.addObserver(this);
 
-		Scene scene = myLevel.initializeScene();
+		Scene scene = currentLevel.initializeScene();
 		stage.setScene(scene);
-		myLevel.startGame();
+		currentLevel.startGame();
 	}
 
 	private void goToMenu(String menuClassName) throws ClassNotFoundException, NoSuchMethodException, SecurityException,
@@ -49,8 +51,16 @@ public class Controller implements Observer {
 		System.out.println("Going to menu " + menuClassName);
 
 		Class<?> myClass = Class.forName(menuClassName);
-		Constructor<?> constructor = myClass.getConstructor(Stage.class, double.class, double.class);
-		MenuParent myMenu = (MenuParent) constructor.newInstance(stage, stage.getWidth(), stage.getHeight());
+		Constructor<?> constructor;
+		MenuParent myMenu;
+
+		if (menuClassName.equals("com.example.demo.menus.PauseMenu")) {
+			constructor = myClass.getConstructor(Stage.class, double.class, double.class, LevelParent.class);
+			myMenu = (MenuParent) constructor.newInstance(stage, stage.getWidth(), stage.getHeight(), currentLevel);
+		} else {
+			constructor = myClass.getConstructor(Stage.class, double.class, double.class);
+			myMenu = (MenuParent) constructor.newInstance(stage, stage.getWidth(), stage.getHeight());
+		}
 
 		myMenu.addObserver(this);
 

@@ -3,7 +3,6 @@ package com.example.demo.menus;
 import javafx.stage.Stage;
 import javafx.event.EventHandler;
 import javafx.event.ActionEvent;
-import javafx.scene.image.Image;
 
 public class HomeMenu extends MenuParent {
     private static final String BACKGROUND_IMAGE_NAME = "/com/example/demo/images/homemenu.png";

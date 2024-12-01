@@ -16,7 +16,9 @@ public class LevelTwo extends LevelParent {
 
 	@Override
 	protected void initializeFriendlyUnits() {
-		getRoot().getChildren().add(getUser());
+		if (!getRoot().getChildren().contains(getUser())) {
+			getRoot().getChildren().add(getUser());
+		}
 	}
 
 	@Override

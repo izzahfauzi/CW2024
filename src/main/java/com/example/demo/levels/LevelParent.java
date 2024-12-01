@@ -13,6 +13,7 @@ import javafx.scene.Scene;
 import javafx.scene.image.*;
 import javafx.scene.input.*;
 import javafx.util.Duration;
+import com.example.demo.actors.Boss;
 
 public abstract class LevelParent extends Observable {
 
@@ -34,6 +35,7 @@ public abstract class LevelParent extends Observable {
 	private final List<ActiveActorDestructible> enemyProjectiles;
 	private int currentNumberOfEnemies;
 	private final LevelView levelView;
+	private boolean isPaused = false;
 
 	public LevelParent(String backgroundImageName, double screenHeight, double screenWidth, int playerInitialHealth) {
 		this.root = new Group();
@@ -113,7 +115,10 @@ public abstract class LevelParent extends Observable {
 		background.setFocusTraversable(true);
 		background.setFitHeight(screenHeight);
 		background.setFitWidth(screenWidth);
-		root.getChildren().add(background);
+
+		if (!root.getChildren().contains(background)){
+			root.getChildren().add(background);
+		}
 
 		initializeControls();
 	}
@@ -130,6 +135,7 @@ public abstract class LevelParent extends Observable {
 
 				if (kc == KeyCode.SPACE) fireProjectile();
 
+				if (kc == KeyCode.P) togglePause();
 			}
 		});
 		background.setOnKeyReleased(new EventHandler<KeyEvent>() {
@@ -145,6 +151,25 @@ public abstract class LevelParent extends Observable {
 		ActiveActorDestructible projectile = user.fireProjectile();
 		root.getChildren().add(projectile);
 		userProjectiles.add(projectile);
+	}
+
+	private void togglePause(){
+		if (isPaused){
+			resumeGame();
+		} else {
+			pauseGame();
+		}
+	}
+
+	private void pauseGame() {
+		isPaused = true;
+		timeline.stop();
+		goToMenu("PauseMenu");
+	}
+
+	private void resumeGame() {
+		isPaused = false;
+		timeline.play();
 	}
 
 	private void generateEnemyFire() {
@@ -180,7 +205,22 @@ public abstract class LevelParent extends Observable {
 	}
 
 	private void handlePlaneCollisions() {
-		handleCollisions(friendlyUnits, enemyUnits);
+		for (ActiveActorDestructible friendly : friendlyUnits) {
+			for (ActiveActorDestructible enemy : enemyUnits) {
+				if (friendly.getBoundsInParent().intersects(enemy.getBoundsInParent())) {
+					if (enemy instanceof Boss) {
+						user.takeDamage();
+						if (userIsDestroyed()) {
+							loseGame();
+							return;
+						}
+					} else {
+						enemy.takeDamage();
+						friendly.takeDamage();
+					}
+				}
+			}
+		}
 	}
 
 	private void handleUserProjectileCollisions() {

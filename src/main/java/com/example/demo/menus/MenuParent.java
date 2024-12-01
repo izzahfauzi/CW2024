@@ -14,13 +14,15 @@ import javafx.scene.input.MouseEvent;
 
 public abstract class MenuParent extends Observable {
 
-    private final Stage stage;
+    public final Stage stage;
     private final Group root;
     private final Timeline timeline;
     private final Scene scene;
     protected final ImageView background;
     protected final double screenWidth;
     protected final double screenHeight;
+    private boolean isPaused = false;
+
 
     public MenuParent(Stage stage, String backgroundImageName, double screenHeight, double screenWidth) {
         this.stage = stage;
@@ -55,7 +57,7 @@ public abstract class MenuParent extends Observable {
         Image image = new Image(getClass().getResource(buttonImagePath).toExternalForm());
 
         double adjustedButtonWidth = buttonWidth;
-        double adjustedButtonHeight = buttonHeight  ;
+        double adjustedButtonHeight = buttonHeight;
 
         ImageView buttonImageView = new ImageView(image);
         buttonImageView.setFitWidth(adjustedButtonWidth);
@@ -96,6 +98,11 @@ public abstract class MenuParent extends Observable {
         return button;
     }
 
+    public void resumeGame() {
+        isPaused = false;
+        timeline.play();
+    }
+
     public void goToNextLevel(String levelName) {
         setChanged();
         notifyObservers(levelName);
@@ -109,6 +116,11 @@ public abstract class MenuParent extends Observable {
 
         timeline.stop();
     }
+
+    public Stage getStage() {
+        return stage;
+    }
+
 
 
 }
