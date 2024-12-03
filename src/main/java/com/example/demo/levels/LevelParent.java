@@ -2,6 +2,7 @@ package com.example.demo.levels;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
 import javafx.util.Duration;
 
 import com.example.demo.ActiveActorDestructible;
@@ -41,6 +42,15 @@ public abstract class LevelParent extends Observable {
 	private boolean isPaused = false;
 	private SoundEffectsManager soundEffectsManager;
 	private static final String SHOOT = "/com/example/demo/audios/sound effects/Gun.wav";
+	private static final String WIN = "/com/example/demo/audios/sound effects/Win.wav";
+	protected abstract void initializeFriendlyUnits();
+
+	protected abstract void checkIfGameOver();
+
+	protected abstract void spawnEnemyUnits();
+
+	protected abstract LevelView instantiateLevelView();
+	protected abstract LevelViewLevelBoss instantiateLevelViewLevelBoss();
 
 
 
@@ -70,15 +80,6 @@ public abstract class LevelParent extends Observable {
 
 	}
 
-	protected abstract void initializeFriendlyUnits();
-
-	protected abstract void checkIfGameOver();
-
-	protected abstract void spawnEnemyUnits();
-
-	protected abstract LevelView instantiateLevelView();
-	protected abstract LevelViewLevelBoss instantiateLevelViewLevelBoss();
-
 	public Scene initializeScene() {
 		initializeBackground();
 		initializeFriendlyUnits();
@@ -94,12 +95,14 @@ public abstract class LevelParent extends Observable {
 		timeline.play();
 	}
 
-	public void goToNextLevel(String levelName) {
+	public void showTransitionPrompt(String transitionName) {
 		setChanged();
-		notifyObservers(levelName);
+		notifyObservers(transitionName);
 
 		timeline.stop();
+		soundEffectsManager.playSound(WIN);
 	}
+
 	public void goToMenu(String menuName) {
 		setChanged();
 		notifyObservers(menuName);

@@ -22,7 +22,7 @@ public class LevelThree extends LevelParent {
         if (userIsDestroyed()) {
             loseGame();
         } else if (userHasReachedKillTarget()) {
-            goToNextLevel("LevelBoss");
+            showTransitionPrompt("TransitionThree");
         }
     }
 

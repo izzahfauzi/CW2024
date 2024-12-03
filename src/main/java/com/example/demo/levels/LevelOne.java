@@ -4,7 +4,7 @@ import com.example.demo.ActiveActorDestructible;
 import com.example.demo.actors.EnemyPlane;
 
 public class LevelOne extends LevelParent {
-	
+
 	private static final String BACKGROUND_IMAGE_NAME = "/com/example/demo/images/sky2.png";
 
 	private static final int TOTAL_ENEMIES = 5;
@@ -20,9 +20,9 @@ public class LevelOne extends LevelParent {
 	protected void checkIfGameOver() {
 		if (userIsDestroyed()) {
 			loseGame();
+		} else if (userHasReachedKillTarget()) {
+			showTransitionPrompt("TransitionOne");
 		}
-		else if (userHasReachedKillTarget())
-			goToNextLevel("LevelTwo");
 	}
 
 	@Override

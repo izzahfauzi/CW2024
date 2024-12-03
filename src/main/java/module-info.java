@@ -10,4 +10,5 @@ module com.example.demo {
     opens com.example.demo.levels to javafx.fxml;
     opens com.example.demo.projectiles to javafx.fxml;
     opens com.example.demo.ui to javafx.fxml;
+    opens com.example.demo.transition to javafx.fxml;
 }

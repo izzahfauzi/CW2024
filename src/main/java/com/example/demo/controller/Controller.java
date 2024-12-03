@@ -11,7 +11,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 import com.example.demo.levels.LevelParent;
 import com.example.demo.menus.MenuParent;
-import com.example.demo.menus.HomeMenu;
+import com.example.demo.transition.TransitionParent;
 
 public class Controller implements Observer {
 
@@ -30,20 +30,18 @@ public class Controller implements Observer {
 		goToMenu(HOME_MENU);
 	}
 
-	private void goToLevel(String className) throws ClassNotFoundException, NoSuchMethodException, SecurityException,
-			InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		System.out.println("Going to level " + className);
+	private void showTransitionPrompt(String transitionClassName) throws ClassNotFoundException, NoSuchMethodException,
+			InstantiationException, IllegalAccessException, InvocationTargetException {
+		System.out.println("Going to transition " + transitionClassName);
 
+		Class<?> myClass = Class.forName(transitionClassName);
+		Constructor<?> constructor = myClass.getConstructor(Stage.class, double.class, double.class);
+		TransitionParent transition = (TransitionParent) constructor.newInstance(stage, stage.getHeight(), stage.getWidth());
 
-		Class<?> myClass = Class.forName(className);
-		Constructor<?> constructor = myClass.getConstructor(double.class, double.class);
-		currentLevel = (LevelParent) constructor.newInstance(stage.getHeight(), stage.getWidth());
+		transition.addObserver(this);
 
-		currentLevel.addObserver(this);
-
-		Scene scene = currentLevel.initializeScene();
+		Scene scene = transition.initializeScene();
 		stage.setScene(scene);
-		currentLevel.startGame();
 	}
 
 	private void goToMenu(String menuClassName) throws ClassNotFoundException, NoSuchMethodException, SecurityException,
@@ -68,19 +66,38 @@ public class Controller implements Observer {
 		stage.setScene(scene);
 	}
 
+	private void goToLevel(String className) throws ClassNotFoundException, NoSuchMethodException, SecurityException,
+			InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		System.out.println("Going to level " + className);
+
+
+		Class<?> myClass = Class.forName(className);
+		Constructor<?> constructor = myClass.getConstructor(double.class, double.class);
+		currentLevel = (LevelParent) constructor.newInstance(stage.getHeight(), stage.getWidth());
+
+		currentLevel.addObserver(this);
+
+		Scene scene = currentLevel.initializeScene();
+		stage.setScene(scene);
+		currentLevel.startGame();
+	}
+
 	@Override
 	public void update(Observable arg0, Object arg1) {
 		String Name = (String) arg1;
 		try {
 			if (Name.contains("Menu")) {
 				goToMenu("com.example.demo.menus." + Name);
-			} else {
+			} else if (Name.contains("Transition")){
+				showTransitionPrompt("com.example.demo.transition." + Name);
+			} else
+			{
 				goToLevel("com.example.demo.levels." + Name);
 			}
 		} catch (ClassNotFoundException | NoSuchMethodException | SecurityException | InstantiationException
 				 | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			Alert alert = new Alert(AlertType.ERROR);
-			alert.setContentText(e.getClass().toString());
+			e.printStackTrace();
 			alert.show();
 		}
 	}

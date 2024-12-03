@@ -22,7 +22,7 @@ public class LevelTwo extends LevelParent {
             loseGame();
         }
         else if (userHasReachedKillTarget())
-            goToNextLevel("LevelThree");
+            showTransitionPrompt("TransitionTwo");
     }
 
     @Override
