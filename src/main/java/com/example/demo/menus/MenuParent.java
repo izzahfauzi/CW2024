@@ -41,6 +41,7 @@ public abstract class MenuParent extends Observable {
 
         soundManager = new SoundManager();
         soundManager.PlayMusic(backgroundMusicPath);
+
     }
 
     public Scene initializeScene() {
@@ -129,7 +130,6 @@ public abstract class MenuParent extends Observable {
             soundManager.stopMusic();
         }
     }
-
 
 
 }

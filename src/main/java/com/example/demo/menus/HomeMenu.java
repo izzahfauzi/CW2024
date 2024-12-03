@@ -11,7 +11,8 @@ public class HomeMenu extends MenuParent {
     private static final String PLAY_BUTTON2 = "/com/example/demo/images/Buttons/play1.png";
     private static final String EXIT_BUTTON1 = "/com/example/demo/images/Buttons/exit1.png";
     private static final String EXIT_BUTTON2 = "/com/example/demo/images/Buttons/exit2.png";
-    private static  final String INFO_ICON = "/com/example/demo/images/Buttons/Info.png";
+    private static  final String INFO_ICON = "/com/example/demo/images/Buttons/Question-Mark.png";
+    private static  final String SETT_ICON = "/com/example/demo/images/Buttons/Gear.png";
 
     public HomeMenu(Stage stage, double screenHeight, double screenWidth) {
         super(stage, BACKGROUND_IMAGE_NAME, screenHeight, screenWidth, BACKGROUND_MUSIC);
@@ -41,7 +42,7 @@ public class HomeMenu extends MenuParent {
             }
         }, posX, exitPosY, exitButtonWidth, exitButtonHeight);
 
-        double INFOPosX = screenWidth - 740;
+        double INFOPosX = screenWidth - 665;
         double INFOPosY = 9;
 
         double infoButtonWidth = 110;
@@ -53,6 +54,19 @@ public class HomeMenu extends MenuParent {
                 goToMenu("InfoMenu");
             }
         },INFOPosX, INFOPosY, infoButtonWidth, infoButtonHeight);
+
+        double SETTPosX = screenWidth - 740;
+        double SETTPosY = 9;
+
+        double settButtonWidth = 110;
+        double settButtonHeight = 50;
+
+        buttonImage(SETT_ICON, null, new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                goToMenu("SettingsMenu");
+            }
+        },SETTPosX, SETTPosY, settButtonWidth, settButtonHeight);
 
     }
 

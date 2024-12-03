@@ -6,8 +6,18 @@ import java.io.IOException;
 
 public class SoundManager {
 
+    private static SoundManager instance;
     private Clip clip;
+    private FloatControl volumeControl;
     private boolean isPlaying = false;
+    private static final float DEFAULT_VOLUME = -10.0f;
+
+    public static SoundManager getInstance() {
+        if (instance == null) {
+            instance = new SoundManager();
+        }
+        return instance;
+    }
 
     public void PlayMusic(String path) {
         try {
@@ -25,11 +35,18 @@ public class SoundManager {
             clip = AudioSystem.getClip();
             clip.open(inputStream);
             clip.start();
-
             clip.loop(Clip.LOOP_CONTINUOUSLY);
 
+            volumeControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+            setVolume(DEFAULT_VOLUME);
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void setVolume(float value) {
+        if (volumeControl != null) {
+            volumeControl.setValue(value);
         }
     }
 
@@ -40,5 +57,29 @@ public class SoundManager {
         }
     }
 
+    public void increaseVolume(float increment) {
+        if (volumeControl != null) {
+            float currentVolume = volumeControl.getValue();
+            float newVolume = Math.min(currentVolume + increment, volumeControl.getMaximum()); // Ensure it doesn't exceed the max value
+            volumeControl.setValue(newVolume);
+            System.out.println("Increased Volume: " + newVolume);
+        } else {
+            System.out.println("Volume control is not available. Cannot increase volume.");
+        }
+    }
 
+    public void decreaseVolume(float decrement) {
+        if (volumeControl != null) {
+            float currentVolume = volumeControl.getValue();
+            float newVolume = Math.max(currentVolume - decrement, volumeControl.getMinimum()); // Ensure it doesn't go below the min value
+            volumeControl.setValue(newVolume);
+            System.out.println("Decreased Volume: " + newVolume);
+        } else {
+            System.out.println("Volume control is not available. Cannot decrease volume.");
+        }
+    }
+
+    public float getVolume() {
+        return volumeControl != null ? volumeControl.getValue() : 0;
+    }
 }
