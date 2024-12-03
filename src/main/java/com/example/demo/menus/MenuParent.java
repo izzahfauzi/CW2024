@@ -26,7 +26,7 @@ public abstract class MenuParent extends Observable {
     private SoundManager soundManager;
 
 
-    public MenuParent(Stage stage, String backgroundImageName, double screenHeight, double screenWidth, String musicFilePath) {
+    public MenuParent(Stage stage, String backgroundImageName, double screenHeight, double screenWidth, String backgroundMusicPath) {
         this.stage = stage;
         this.timeline = new Timeline();
         this.screenHeight = screenHeight;
@@ -40,7 +40,7 @@ public abstract class MenuParent extends Observable {
         initializeBackground();
 
         soundManager = new SoundManager();
-        soundManager.PlayMusic(musicFilePath);
+        soundManager.PlayMusic(backgroundMusicPath);
     }
 
     public Scene initializeScene() {

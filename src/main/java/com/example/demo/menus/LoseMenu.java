@@ -8,7 +8,7 @@ import javafx.stage.Stage;
 
 public class LoseMenu extends MenuParent {
     private static final String BACKGROUND_IMAGE_NAME = "/com/example/demo/images/losemenu.png";
-    private static final String BACKGROUND_MUSIC = "/com/example/demo/audios/Copycat.wav";
+    private static final String BACKGROUND_MUSIC = "/com/example/demo/audios/Down Under.wav";
     private static  final String HOME_ICON = "/com/example/demo/images/Buttons/Home.png";
 
     public LoseMenu(Stage stage, double screenHeight, double screenWidth) {

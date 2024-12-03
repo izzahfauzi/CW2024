@@ -2,18 +2,20 @@ package com.example.demo.levels;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import javafx.util.Duration;
 
 import com.example.demo.ActiveActorDestructible;
 import com.example.demo.actors.UserPlane;
 import com.example.demo.actors.FighterPlane;
+import com.example.demo.actors.Boss;
+import com.example.demo.audio.SoundEffectsManager;
 import javafx.animation.*;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.image.*;
 import javafx.scene.input.*;
-import javafx.util.Duration;
-import com.example.demo.actors.Boss;
+
 
 public abstract class LevelParent extends Observable {
 
@@ -37,6 +39,10 @@ public abstract class LevelParent extends Observable {
 	private final LevelView levelView;
 	private final LevelViewLevelBoss levelViewLevelBoss;
 	private boolean isPaused = false;
+	private SoundEffectsManager soundEffectsManager;
+	private static final String SHOOT = "/com/example/demo/audios/sound effects/Gun.wav";
+
+
 
 	public LevelParent(String backgroundImageName, double screenHeight, double screenWidth, int playerInitialHealth) {
 		this.root = new Group();
@@ -55,6 +61,10 @@ public abstract class LevelParent extends Observable {
 		this.levelView = instantiateLevelView();
 		this.levelViewLevelBoss = instantiateLevelViewLevelBoss();
 		this.currentNumberOfEnemies = 0;
+
+		this.soundEffectsManager = new SoundEffectsManager();
+
+
 		initializeTimeline();
 		friendlyUnits.add(user);
 
@@ -157,6 +167,8 @@ public abstract class LevelParent extends Observable {
 		ActiveActorDestructible projectile = user.fireProjectile();
 		root.getChildren().add(projectile);
 		userProjectiles.add(projectile);
+
+		soundEffectsManager.playSound(SHOOT);
 	}
 
 	private void togglePause(){
@@ -314,5 +326,6 @@ public abstract class LevelParent extends Observable {
 	protected boolean userIsDestroyed() {
 		return user.isDestroyed();
 	}
+
 
 }
