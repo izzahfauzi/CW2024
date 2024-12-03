@@ -11,6 +11,7 @@ public class HomeMenu extends MenuParent {
     private static final String PLAY_BUTTON2 = "/com/example/demo/images/Buttons/play1.png";
     private static final String EXIT_BUTTON1 = "/com/example/demo/images/Buttons/exit1.png";
     private static final String EXIT_BUTTON2 = "/com/example/demo/images/Buttons/exit2.png";
+    private static  final String INFO_ICON = "/com/example/demo/images/Buttons/Info.png";
 
     public HomeMenu(Stage stage, double screenHeight, double screenWidth) {
         super(stage, BACKGROUND_IMAGE_NAME, screenHeight, screenWidth, BACKGROUND_MUSIC);
@@ -39,6 +40,19 @@ public class HomeMenu extends MenuParent {
                 exitGame();
             }
         }, posX, exitPosY, exitButtonWidth, exitButtonHeight);
+
+        double INFOPosX = screenWidth - 740;
+        double INFOPosY = 9;
+
+        double infoButtonWidth = 110;
+        double infoButtonHeight = 50;
+
+        buttonImage(INFO_ICON, null, new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                goToMenu("InfoMenu");
+            }
+        },INFOPosX, INFOPosY, infoButtonWidth, infoButtonHeight);
 
     }
 
