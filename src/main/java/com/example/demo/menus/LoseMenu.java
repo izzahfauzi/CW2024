@@ -23,6 +23,7 @@ public class LoseMenu extends MenuParent {
                 KeyCode kc = e.getCode();
                 if (kc == KeyCode.SPACE) {
                     goToNextLevel("LevelOne");
+                    stopBackgroundMusic();
                 }
             }
         });
