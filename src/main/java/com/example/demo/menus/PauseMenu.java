@@ -11,11 +11,12 @@ import com.example.demo.levels.LevelParent;
 public class PauseMenu extends MenuParent{
 
     private static final String BACKGROUND_IMAGE_NAME = "/com/example/demo/images/pausemenu.png";
+    private static final String BACKGROUND_MUSIC = "/com/example/demo/audios/Copycat.wav";
     private static  final String HOME_ICON = "/com/example/demo/images/Buttons/Home.png";
     private LevelParent currentLevel;
 
     public PauseMenu(Stage stage, double screenHeight, double screenWidth, LevelParent currentLevel) {
-        super(stage, BACKGROUND_IMAGE_NAME, screenHeight, screenWidth);
+        super(stage, BACKGROUND_IMAGE_NAME, screenHeight, screenWidth, BACKGROUND_MUSIC);
         this.currentLevel = currentLevel;
         initializeControls();
     }
@@ -52,6 +53,7 @@ public class PauseMenu extends MenuParent{
     public void resumeGame() {
         super.resumeGame();
         transitionToLevel();
+        stopBackgroundMusic();
     }
     private void transitionToLevel() {
         if (currentLevel != null) {

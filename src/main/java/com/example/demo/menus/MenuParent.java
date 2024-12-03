@@ -11,6 +11,7 @@ import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
+import com.example.demo.audio.SoundManager;
 
 public abstract class MenuParent extends Observable {
 
@@ -22,9 +23,10 @@ public abstract class MenuParent extends Observable {
     protected final double screenWidth;
     protected final double screenHeight;
     private boolean isPaused = false;
+    private SoundManager soundManager;
 
 
-    public MenuParent(Stage stage, String backgroundImageName, double screenHeight, double screenWidth) {
+    public MenuParent(Stage stage, String backgroundImageName, double screenHeight, double screenWidth, String musicFilePath) {
         this.stage = stage;
         this.timeline = new Timeline();
         this.screenHeight = screenHeight;
@@ -36,6 +38,9 @@ public abstract class MenuParent extends Observable {
         this.background = new ImageView(new Image(getClass().getResource(backgroundImageName).toExternalForm()));
 
         initializeBackground();
+
+        soundManager = new SoundManager();
+        soundManager.PlayMusic(musicFilePath);
     }
 
     public Scene initializeScene() {
@@ -108,6 +113,7 @@ public abstract class MenuParent extends Observable {
         notifyObservers(levelName);
 
         timeline.stop();
+        stopBackgroundMusic();
     }
 
     public void goToMenu(String menuName) {
@@ -115,10 +121,13 @@ public abstract class MenuParent extends Observable {
         notifyObservers(menuName);
 
         timeline.stop();
+        stopBackgroundMusic();
     }
 
-    public Stage getStage() {
-        return stage;
+    protected void stopBackgroundMusic() {
+        if (soundManager != null) {
+            soundManager.stopMusic();
+        }
     }
 
 
