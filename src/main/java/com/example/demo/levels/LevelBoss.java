@@ -7,11 +7,11 @@ public class LevelBoss extends LevelParent {
 	private static final String BACKGROUND_IMAGE_NAME = "/com/example/demo/images/sky2.png";
 	private static final int PLAYER_INITIAL_HEALTH = 5;
 	private final Boss boss;
-	private LevelViewLevelBoss levelView;
+	private LevelViewLevelBoss levelViewLevelBoss;
 
 	public LevelBoss(double screenHeight, double screenWidth) {
 		super(BACKGROUND_IMAGE_NAME, screenHeight, screenWidth, PLAYER_INITIAL_HEALTH);
-		boss = new Boss(levelView);
+		boss = new Boss(levelViewLevelBoss);
 	}
 
 	@Override
@@ -40,8 +40,13 @@ public class LevelBoss extends LevelParent {
 
 	@Override
 	protected LevelView instantiateLevelView() {
-		levelView = new LevelViewLevelBoss(getRoot(), PLAYER_INITIAL_HEALTH);
-		return levelView;
+		return new LevelView(getRoot(), PLAYER_INITIAL_HEALTH);
+	}
+
+	@Override
+	protected LevelViewLevelBoss instantiateLevelViewLevelBoss() {
+		levelViewLevelBoss = new LevelViewLevelBoss(getRoot(), PLAYER_INITIAL_HEALTH);
+		return levelViewLevelBoss;
 	}
 
 }

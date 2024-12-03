@@ -7,7 +7,7 @@ public class LevelThree extends LevelParent {
 
     private static final String BACKGROUND_IMAGE_NAME = "/com/example/demo/images/sky2.png";
     private static final int TOTAL_ENEMIES = 7;
-    private static final int KILLS_TO_ADVANCE = 15;
+    private static final int KILLS_TO_ADVANCE = 1;
     private static final double ENEMY_SPAWN_PROBABILITY = 0.25;
     private static final double SPECIAL_ENEMY_PROBABILITY = 0.25;
     private static final double TANK_ENEMY_PROBABILITY = 0.50;
@@ -56,6 +56,11 @@ public class LevelThree extends LevelParent {
     @Override
     protected LevelView instantiateLevelView() {
         return new LevelView(getRoot(), PLAYER_INITIAL_HEALTH);
+    }
+
+    @Override
+    protected LevelViewLevelBoss instantiateLevelViewLevelBoss() {
+        return null;
     }
 
     private boolean userHasReachedKillTarget() {
