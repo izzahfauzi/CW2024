@@ -4,9 +4,9 @@ import com.example.demo.ActiveActorDestructible;
 import com.example.demo.actors.EnemyPlane;
 
 public class LevelOne extends LevelParent {
-	
+
 	private static final String BACKGROUND_IMAGE_NAME = "/com/example/demo/images/sky2.png";
-	private static final String LEVEL_TWO = "com.example.demo.levels.LevelTwo";
+
 	private static final int TOTAL_ENEMIES = 5;
 	private static final int KILLS_TO_ADVANCE = 1;
 	private static final double ENEMY_SPAWN_PROBABILITY = .20;
@@ -20,14 +20,16 @@ public class LevelOne extends LevelParent {
 	protected void checkIfGameOver() {
 		if (userIsDestroyed()) {
 			loseGame();
+		} else if (userHasReachedKillTarget()) {
+			showTransitionPrompt("TransitionOne");
 		}
-		else if (userHasReachedKillTarget())
-			goToNextLevel(LEVEL_TWO);
 	}
 
 	@Override
 	protected void initializeFriendlyUnits() {
-		getRoot().getChildren().add(getUser());
+		if (!getRoot().getChildren().contains(getUser())) {
+			getRoot().getChildren().add(getUser());
+		}
 	}
 
 	@Override
@@ -37,7 +39,7 @@ public class LevelOne extends LevelParent {
 			for (int i = 0; i < totalEnemiesToSpawn; i++) {
 				if (Math.random() < ENEMY_SPAWN_PROBABILITY) {
 					double newEnemyInitialYPosition = Math.random() * getEnemyMaximumYPosition();
-					ActiveActorDestructible newEnemy = new EnemyPlane(getScreenWidth(), newEnemyInitialYPosition);
+					ActiveActorDestructible newEnemy = new EnemyPlane(getScreenWidth(), newEnemyInitialYPosition, false, false);
 					addEnemyUnit(newEnemy);
 				}
 			}
@@ -47,6 +49,11 @@ public class LevelOne extends LevelParent {
 	@Override
 	protected LevelView instantiateLevelView() {
 		return new LevelView(getRoot(), PLAYER_INITIAL_HEALTH);
+	}
+
+	@Override
+	protected LevelViewLevelBoss instantiateLevelViewLevelBoss() {
+		return null;
 	}
 
 	private boolean userHasReachedKillTarget() {

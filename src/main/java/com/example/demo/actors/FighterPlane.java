@@ -4,7 +4,8 @@ import com.example.demo.ActiveActorDestructible;
 
 public abstract class FighterPlane extends ActiveActorDestructible {
 
-	private int health;
+	protected int health;
+	protected int horizontalVelocity;
 
 	public FighterPlane(String imageName, int imageHeight, double initialXPos, double initialYPos, int health) {
 		super(imageName, imageHeight, initialXPos, initialYPos);
@@ -16,7 +17,7 @@ public abstract class FighterPlane extends ActiveActorDestructible {
 	@Override
 	public void takeDamage() {
 		health--;
-		if (healthAtZero()) {
+		if (healthAtZero() || health < 0) {
 			this.destroy();
 		}
 	}

@@ -3,16 +3,20 @@ package com.example.demo.levels;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import javafx.util.Duration;
+
 import com.example.demo.ActiveActorDestructible;
 import com.example.demo.actors.UserPlane;
 import com.example.demo.actors.FighterPlane;
+import com.example.demo.actors.Boss;
+import com.example.demo.audio.SoundEffectsManager;
 import javafx.animation.*;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.image.*;
 import javafx.scene.input.*;
-import javafx.util.Duration;
+
 
 public abstract class LevelParent extends Observable {
 
@@ -34,6 +38,21 @@ public abstract class LevelParent extends Observable {
 	private final List<ActiveActorDestructible> enemyProjectiles;
 	private int currentNumberOfEnemies;
 	private final LevelView levelView;
+	private final LevelViewLevelBoss levelViewLevelBoss;
+	private boolean isPaused = false;
+	private SoundEffectsManager soundEffectsManager;
+	private static final String SHOOT = "/com/example/demo/audios/sound effects/Gun.wav";
+	private static final String WIN = "/com/example/demo/audios/sound effects/Win.wav";
+	protected abstract void initializeFriendlyUnits();
+
+	protected abstract void checkIfGameOver();
+
+	protected abstract void spawnEnemyUnits();
+
+	protected abstract LevelView instantiateLevelView();
+	protected abstract LevelViewLevelBoss instantiateLevelViewLevelBoss();
+
+
 
 	public LevelParent(String backgroundImageName, double screenHeight, double screenWidth, int playerInitialHealth) {
 		this.root = new Group();
@@ -50,24 +69,24 @@ public abstract class LevelParent extends Observable {
 		this.screenWidth = screenWidth;
 		this.enemyMaximumYPosition = screenHeight - SCREEN_HEIGHT_ADJUSTMENT;
 		this.levelView = instantiateLevelView();
+		this.levelViewLevelBoss = instantiateLevelViewLevelBoss();
 		this.currentNumberOfEnemies = 0;
+
+		this.soundEffectsManager = new SoundEffectsManager();
+
+
 		initializeTimeline();
 		friendlyUnits.add(user);
 
 	}
 
-	protected abstract void initializeFriendlyUnits();
-
-	protected abstract void checkIfGameOver();
-
-	protected abstract void spawnEnemyUnits();
-
-	protected abstract LevelView instantiateLevelView();
-
 	public Scene initializeScene() {
 		initializeBackground();
 		initializeFriendlyUnits();
 		levelView.showHeartDisplay();
+		if (levelViewLevelBoss != null){
+			levelViewLevelBoss.showBossHealthDisplay();
+		}
 		return scene;
 	}
 
@@ -76,12 +95,14 @@ public abstract class LevelParent extends Observable {
 		timeline.play();
 	}
 
-	public void goToNextLevel(String levelName) {
+	public void showTransitionPrompt(String transitionName) {
 		setChanged();
-		notifyObservers(levelName);
+		notifyObservers(transitionName);
 
 		timeline.stop();
+		soundEffectsManager.playSound(WIN);
 	}
+
 	public void goToMenu(String menuName) {
 		setChanged();
 		notifyObservers(menuName);
@@ -113,7 +134,10 @@ public abstract class LevelParent extends Observable {
 		background.setFocusTraversable(true);
 		background.setFitHeight(screenHeight);
 		background.setFitWidth(screenWidth);
-		root.getChildren().add(background);
+
+		if (!root.getChildren().contains(background)){
+			root.getChildren().add(background);
+		}
 
 		initializeControls();
 	}
@@ -130,6 +154,7 @@ public abstract class LevelParent extends Observable {
 
 				if (kc == KeyCode.SPACE) fireProjectile();
 
+				if (kc == KeyCode.P) togglePause();
 			}
 		});
 		background.setOnKeyReleased(new EventHandler<KeyEvent>() {
@@ -145,6 +170,27 @@ public abstract class LevelParent extends Observable {
 		ActiveActorDestructible projectile = user.fireProjectile();
 		root.getChildren().add(projectile);
 		userProjectiles.add(projectile);
+
+		soundEffectsManager.playSound(SHOOT);
+	}
+
+	private void togglePause(){
+		if (isPaused){
+			resumeGame();
+		} else {
+			pauseGame();
+		}
+	}
+
+	private void pauseGame() {
+		isPaused = true;
+		timeline.stop();
+		goToMenu("PauseMenu");
+	}
+
+	private void resumeGame() {
+		isPaused = false;
+		timeline.play();
 	}
 
 	private void generateEnemyFire() {
@@ -173,14 +219,28 @@ public abstract class LevelParent extends Observable {
 	}
 
 	private void removeDestroyedActors(List<ActiveActorDestructible> actors) {
-		List<ActiveActorDestructible> destroyedActors = actors.stream().filter(actor -> actor.isDestroyed())
-				.collect(Collectors.toList());
+		List<ActiveActorDestructible> destroyedActors = actors.stream().filter(actor -> actor.isDestroyed()).collect(Collectors.toList());
 		root.getChildren().removeAll(destroyedActors);
 		actors.removeAll(destroyedActors);
 	}
 
 	private void handlePlaneCollisions() {
-		handleCollisions(friendlyUnits, enemyUnits);
+		for (ActiveActorDestructible friendly : friendlyUnits) {
+			for (ActiveActorDestructible enemy : enemyUnits) {
+				if (friendly.getBoundsInParent().intersects(enemy.getBoundsInParent())) {
+					if (enemy instanceof Boss) {
+						user.takeDamage();
+						if (userIsDestroyed()) {
+							loseGame();
+							return;
+						}
+					} else {
+						enemy.takeDamage();
+						friendly.takeDamage();
+					}
+				}
+			}
+		}
 	}
 
 	private void handleUserProjectileCollisions() {
@@ -269,5 +329,6 @@ public abstract class LevelParent extends Observable {
 	protected boolean userIsDestroyed() {
 		return user.isDestroyed();
 	}
+
 
 }

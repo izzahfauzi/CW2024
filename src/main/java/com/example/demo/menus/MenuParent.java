@@ -8,28 +8,29 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
+import javafx.scene.control.Button;
+import javafx.scene.input.MouseEvent;
+import com.example.demo.audio.SoundManager;
 
 public abstract class MenuParent extends Observable {
 
-    private final Stage stage;
+    public final Stage stage;
     private final Group root;
     private final Timeline timeline;
     private final Scene scene;
-    private final ImageView background;
-    private final double screenWidth;
-    private final double screenHeight;
-    private final double zoomFactor;
-    private static final String LEVEL_ONE = "com.example.demo.levels.LevelOne";
+    protected final ImageView background;
+    protected final double screenWidth;
+    protected final double screenHeight;
+    private boolean isPaused = false;
+    private SoundManager soundManager;
 
-    public MenuParent(Stage stage, String backgroundImageName, double screenHeight, double screenWidth, double zoomFactor) {
+
+    public MenuParent(Stage stage, String backgroundImageName, double screenHeight, double screenWidth, String backgroundMusicPath) {
         this.stage = stage;
         this.timeline = new Timeline();
         this.screenHeight = screenHeight;
         this.screenWidth = screenWidth;
-        this.zoomFactor = zoomFactor;
 
         this.root = new Group();
         this.scene = new Scene(root, screenWidth, screenHeight);
@@ -37,7 +38,9 @@ public abstract class MenuParent extends Observable {
         this.background = new ImageView(new Image(getClass().getResource(backgroundImageName).toExternalForm()));
 
         initializeBackground();
-        initializeControls();
+
+        soundManager = new SoundManager();
+        soundManager.PlayMusic(backgroundMusicPath);
 
     }
 
@@ -45,35 +48,65 @@ public abstract class MenuParent extends Observable {
         return scene;
     }
 
+    protected void initializeControls() {
+    }
+
     private void initializeBackground() {
         background.setFocusTraversable(true);
         background.setPreserveRatio(true);
 
-        double imageWidth = background.getImage().getWidth();
-        double imageHeight = background.getImage().getHeight();
-
-        double scaleWidth = screenWidth / imageWidth;
-        double scaleHeight = screenHeight / imageHeight;
-
-        double scaleFactor = Math.min(scaleWidth, scaleHeight) * zoomFactor;;
-
-        background.setFitWidth(imageWidth * scaleFactor);
-        background.setFitHeight(imageHeight * scaleFactor);
-
         root.getChildren().add(background);
     }
 
-    private void initializeControls(){
-        timeline.stop();
-        background.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            public void handle(KeyEvent e) {
-                KeyCode kc = e.getCode();
-                if (kc == KeyCode.SPACE) {
-                    System.out.println("Space");
-                    goToNextLevel(LEVEL_ONE);
+    protected Button buttonImage(String buttonImagePath, String hoverImagePath, EventHandler eventHandler, double posX, double posY, double buttonWidth, double buttonHeight) {
+
+        Image image = new Image(getClass().getResource(buttonImagePath).toExternalForm());
+
+        double adjustedButtonWidth = buttonWidth;
+        double adjustedButtonHeight = buttonHeight;
+
+        ImageView buttonImageView = new ImageView(image);
+        buttonImageView.setFitWidth(adjustedButtonWidth);
+        buttonImageView.setFitHeight(adjustedButtonHeight);
+        buttonImageView.setPreserveRatio(true);
+
+        Button button = new Button();
+        button.setGraphic(buttonImageView);
+        button.setStyle("-fx-background-color: transparent;");
+
+        button.setLayoutX(posX);
+        button.setLayoutY(posY);
+
+        button.setOnAction(eventHandler);
+
+        if (hoverImagePath != null) {
+            button.setOnMouseEntered(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    Image hoverImage = new Image(getClass().getResource(hoverImagePath).toExternalForm());
+                    ImageView hoverImageView = new ImageView(hoverImage);
+                    hoverImageView.setFitWidth(adjustedButtonWidth);
+                    hoverImageView.setFitHeight(adjustedButtonHeight);
+                    hoverImageView.setPreserveRatio(true);
+                    button.setGraphic(hoverImageView);
                 }
-            }
-        });
+            });
+
+            button.setOnMouseExited(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    button.setGraphic(buttonImageView);
+                }
+            });
+        }
+        root.getChildren().add(button);
+
+        return button;
+    }
+
+    public void resumeGame() {
+        isPaused = false;
+        timeline.play();
     }
 
     public void goToNextLevel(String levelName) {
@@ -81,9 +114,22 @@ public abstract class MenuParent extends Observable {
         notifyObservers(levelName);
 
         timeline.stop();
+        stopBackgroundMusic();
     }
 
+    public void goToMenu(String menuName) {
+        setChanged();
+        notifyObservers(menuName);
 
+        timeline.stop();
+        stopBackgroundMusic();
+    }
+
+    protected void stopBackgroundMusic() {
+        if (soundManager != null) {
+            soundManager.stopMusic();
+        }
+    }
 
 
 }

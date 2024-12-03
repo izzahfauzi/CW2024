@@ -102,5 +102,4 @@ public class UserPlane extends FighterPlane {
 		numberOfKills++;
 		System.out.println("Kill Count: " + numberOfKills);
 	}
-
 }
