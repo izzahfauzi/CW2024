@@ -24,7 +24,6 @@ public class EnemyPlane extends FighterPlane {
 	private static final double FIRE_RATE = .01;
 	private final double screenWidth = 1300;
 	private boolean specialEnemy;
-	private boolean tankEnemy;
 	private static final int VERTICAL_VELOCITY = 5;
 	private List<Integer> movePattern;
 	private int consecutiveMovesInSameDirection;

@@ -1,7 +1,5 @@
 package com.example.demo.menus;
 
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.event.EventHandler;
 import javafx.event.ActionEvent;
 import javafx.stage.Stage;
