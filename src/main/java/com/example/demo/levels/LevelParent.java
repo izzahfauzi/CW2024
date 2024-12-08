@@ -10,6 +10,8 @@ import com.example.demo.actors.UserPlane;
 import com.example.demo.actors.FighterPlane;
 import com.example.demo.actors.Boss;
 import com.example.demo.audio.SoundEffectsManager;
+import com.example.demo.powerup.PowerUpManager;
+import com.example.demo.powerup.GainHeart;
 import javafx.animation.*;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
@@ -43,6 +45,9 @@ public abstract class LevelParent extends Observable {
 	private SoundEffectsManager soundEffectsManager;
 	private static final String SHOOT = "/com/example/demo/audios/sound effects/Gun.wav";
 	private static final String WIN = "/com/example/demo/audios/sound effects/Win.wav";
+	private static final String POWER_UP = "/com/example/demo/audios/sound effects/Boost.wav";
+	private static final String HIT = "/com/example/demo/audios/sound effects/Hurt.wav";
+	private static final String ENEMY_HIT = "/com/example/demo/audios/sound effects/Hurt.wav";
 	protected abstract void initializeFriendlyUnits();
 
 	protected abstract void checkIfGameOver();
@@ -51,6 +56,8 @@ public abstract class LevelParent extends Observable {
 
 	protected abstract LevelView instantiateLevelView();
 	protected abstract LevelViewLevelBoss instantiateLevelViewLevelBoss();
+	private final PowerUpManager powerUpManager;
+
 
 
 
@@ -71,9 +78,9 @@ public abstract class LevelParent extends Observable {
 		this.levelView = instantiateLevelView();
 		this.levelViewLevelBoss = instantiateLevelViewLevelBoss();
 		this.currentNumberOfEnemies = 0;
+		this.powerUpManager = new PowerUpManager(root, user);
 
 		this.soundEffectsManager = new SoundEffectsManager();
-
 
 		initializeTimeline();
 		friendlyUnits.add(user);
@@ -122,6 +129,9 @@ public abstract class LevelParent extends Observable {
 		removeAllDestroyedActors();
 		updateLevelView();
 		checkIfGameOver();
+		powerUpManager.spawnPowerUp();
+		powerUpManager.updatePowerUps();
+		powerUpManager.checkForCollisions();
 	}
 
 	private void initializeTimeline() {
@@ -241,6 +251,21 @@ public abstract class LevelParent extends Observable {
 				}
 			}
 		}
+
+		List<ActiveActorDestructible> toRemove = new ArrayList<>();
+		for (ActiveActorDestructible powerUp : powerUpManager.getActivePowerUps()) {
+			if (user.getBoundsInParent().intersects(powerUp.getBoundsInParent())) {
+				if (powerUp instanceof GainHeart) {
+					user.gainHealth(1);
+					soundEffectsManager.playSound(POWER_UP);
+				}
+				toRemove.add(powerUp);
+			}
+		}
+		for (ActiveActorDestructible powerUp : toRemove) {
+			powerUpManager.getActivePowerUps().remove(powerUp);
+			root.getChildren().remove(powerUp);
+		}
 	}
 
 	private void handleUserProjectileCollisions() {
@@ -249,6 +274,7 @@ public abstract class LevelParent extends Observable {
 					if (projectile.getBoundsInParent().intersects(enemy.getBoundsInParent())){
 						enemy.takeDamage();
 						projectile.destroy();
+						soundEffectsManager.playSound(ENEMY_HIT);
 						if (enemy.isDestroyed()){
 							user.incrementKillCount();
 						}
@@ -268,6 +294,7 @@ public abstract class LevelParent extends Observable {
 				if (actor.getBoundsInParent().intersects(otherActor.getBoundsInParent())) {
 					actor.takeDamage();
 					otherActor.takeDamage();
+					soundEffectsManager.playSound(HIT);
 				}
 			}
 		}
@@ -279,6 +306,7 @@ public abstract class LevelParent extends Observable {
 				user.takeDamage();
 				enemy.destroy();
 				updateNumberOfEnemies();
+				soundEffectsManager.playSound(HIT);
 			}
 		}
 	}
@@ -288,7 +316,7 @@ public abstract class LevelParent extends Observable {
 	}
 
 	private void updateLevelView() {
-		levelView.removeHearts(user.getHealth());
+		levelView.updateHearts(user.getHealth());
 	}
 
 	protected void winGame() {

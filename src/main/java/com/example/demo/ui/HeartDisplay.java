@@ -8,7 +8,6 @@ public class HeartDisplay {
 	
 	private static final String HEART_IMAGE_NAME = "/com/example/demo/images/hearts2.png";
 	private static final int HEART_HEIGHT = 50;
-	private static final int INDEX_OF_FIRST_ITEM = 0;
 	private HBox container;
 	private double containerXPosition;
 	private double containerYPosition;
@@ -37,12 +36,22 @@ public class HeartDisplay {
 			container.getChildren().add(heart);
 		}
 	}
-	
-	public void removeHeart() {
-		if (!container.getChildren().isEmpty())
-			container.getChildren().remove(INDEX_OF_FIRST_ITEM);
+
+	public void updateHeartDisplay(int heartsRemaining) {
+		int currentNumberOfHearts = container.getChildren().size();
+
+		for (int i = currentNumberOfHearts; i < heartsRemaining; i++) {
+			ImageView heart = new ImageView(new Image(getClass().getResource(HEART_IMAGE_NAME).toExternalForm()));
+			heart.setFitHeight(HEART_HEIGHT);
+			heart.setPreserveRatio(true);
+			container.getChildren().add(heart);
+		}
+
+		for (int i = currentNumberOfHearts - 1; i >= heartsRemaining; i--) {
+			container.getChildren().remove(i);
+		}
 	}
-	
+
 	public HBox getContainer() {
 		return container;
 	}

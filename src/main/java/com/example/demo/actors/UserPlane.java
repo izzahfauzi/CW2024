@@ -100,4 +100,14 @@ public class UserPlane extends FighterPlane {
 		numberOfKills++;
 		System.out.println("Kill Count: " + numberOfKills);
 	}
+
+	public void gainHealth(int amount) {
+		if (health < 5) {
+			health += amount;
+			if (health > 5) {
+				health = 5;
+			}
+		}
+	}
+
 }
