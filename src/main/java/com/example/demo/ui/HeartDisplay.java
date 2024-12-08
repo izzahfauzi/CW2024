@@ -47,10 +47,11 @@ public class HeartDisplay {
 			container.getChildren().add(heart);
 		}
 
-		for (int i = currentNumberOfHearts - 1; i >= heartsRemaining; i--) {
-			container.getChildren().remove(i);
+		while (container.getChildren().size() > heartsRemaining) {
+			container.getChildren().remove(container.getChildren().size() - 1);
 		}
 	}
+
 
 	public HBox getContainer() {
 		return container;
