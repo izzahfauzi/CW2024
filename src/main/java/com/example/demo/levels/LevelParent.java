@@ -238,6 +238,7 @@ public abstract class LevelParent extends Observable {
 		for (ActiveActorDestructible friendly : friendlyUnits) {
 			for (ActiveActorDestructible enemy : enemyUnits) {
 				if (friendly.getBoundsInParent().intersects(enemy.getBoundsInParent())) {
+					soundEffectsManager.playSound(HIT);
 					if (enemy instanceof Boss) {
 						user.takeDamage();
 						if (userIsDestroyed()) {

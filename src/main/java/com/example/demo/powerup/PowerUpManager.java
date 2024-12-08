@@ -10,7 +10,7 @@ import java.util.Random;
 
 public class PowerUpManager {
 
-    private static final int SPAWN_CHANCE = 10;
+    private static final int SPAWN_CHANCE = 1;
     private static final double X_RIGHT_BOUND = 1100.0;
     private static final double Y_UPPER_BOUND = 65.0;
     private static final double Y_LOWER_BOUND = 650.0;
