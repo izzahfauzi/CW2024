@@ -51,9 +51,18 @@
       - When an enemy plane is hit.
 
 7. **WASD Controls**:  
-     - In addition to the arrow keys, users can now move using the **W**, **A**, **S**, and **D** keys.
+     - In addition to the arrow keys, users can move using the **W**, **A**, **S**, and **D** keys.
 
 ### Implemented and Not Working Properly:
+1. **Volume Control in Settings Menu**:
+   - Problem: The volume control functionality fails to adjust the volume when the user presses the button to decrease or increase the volume. When the audio clip is stopped, the associated volume control may either get cleared or become unavailable, preventing volume adjustments.
+   - **Steps taken to address the issue**:
+     - In the original implementation, when stopMusic() was called, the volume control was not preserved therefore leading to issues when trying to adjust the volume after the clip was stopped. I ensured the volume control isn't cleared when stopping the clip, allowing volume adjustments even when the clip is stopped.
+     - The volume control needs to be reinitialized each time the clip is started or resumed. If the clip isn't running or isn't initialized properly, the volume control does not work. I added a debugging statement to ensure the initializeVolumeControl() method is called every time the clip starts.
+     - Trying to adjust the volume would fail if the clip is not running or has been stoppe. This is because the control is tied to the clip's state. I added a debugging statement to ensure that the clip is running.
+   - However, all the steps taken still could not solve the issue.
+   - **Possible solution**:
+     - A possible solution would be to store the volume setting independently. Therefore when the clip restarts, the previously stored volume setting can be reapplied and hence ensuring that the volume remains consistent even when the clip is stopped.
 
 ### Not Implemented:
 1. **More Power Ups**:
