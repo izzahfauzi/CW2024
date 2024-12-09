@@ -74,3 +74,7 @@
 ---
 
 ## UNEXPECTED PROBLEMS
+1. Encountered difficulties running the game in both IntelliJ IDEA and Eclipse during the initial setup:
+   - In IntelliJ IDEA, Microsoft Defender blocked the project from running causing unexpected delays
+   - In Eclipse, an unidentified issue prevented the project from building hence the project could not run properly.
+As a result, progress on the project was delayed by approximately a week. The issue was ultimately resolved by deleting all project files and re-downloading IntelliJ IDEA.
