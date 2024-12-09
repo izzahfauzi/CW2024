@@ -23,7 +23,6 @@
 ### Implemented and Working Properly:
 1. **Menus**:
    - **Home Menu**: The first screen users see upon launching the game. From here, users can start the game, access the settings menu, view the info menu, or exit the game.  
-   - **Settings Menu**: Allows users to adjust the volume to their preference.  
    - **Info Menu**: Provides instructions on how to play the game.
    - **Pause Menu**: Lets users pause the game at any point. From here, they can resume the game or return to the home menu.  
    - **Game Over Menu**: Appears when the user loses, offering the option to restart the game from Level 1 or return to the home menu.
