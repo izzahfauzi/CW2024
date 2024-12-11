@@ -16,7 +16,7 @@ public class Boss extends FighterPlane {
 	private static final double BOSS_SHIELD_PROBABILITY = 0.002;
 	private static final int IMAGE_HEIGHT = 90;
 	private static final int VERTICAL_VELOCITY = 8;
-	private static final int HEALTH = 30; //initially 100 but i cant win
+	private static final int HEALTH = 50;
 	private static final int MOVE_FREQUENCY_PER_CYCLE = 5;
 	private static final int ZERO = 0;
 	private static final int MAX_FRAMES_WITH_SAME_MOVE = 10;
@@ -31,8 +31,6 @@ public class Boss extends FighterPlane {
 	private int framesWithShieldActivated;
 	private static final double SHIELD_X_OFFSET = -30;
 	private static final double SHIELD_Y_OFFSET = 22;
-
-
 
 
 	public Boss(LevelViewLevelBoss levelView) {

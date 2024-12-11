@@ -36,7 +36,7 @@ public class UserPlane extends FighterPlane {
 			}
 		}
 
-		if (isMovingHorizontally()) { // Handle horizontal movement
+		if (isMovingHorizontally()) {
 			double initialTranslateX = getTranslateX();
 			this.moveHorizontally(HORIZONTAL_VELOCITY * horizontalVelocityMultiplier);
 			double newPositionX = getLayoutX() + getTranslateX();

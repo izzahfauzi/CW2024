@@ -60,7 +60,7 @@ public class SoundManager {
     public void increaseVolume(float increment) {
         if (volumeControl != null) {
             float currentVolume = volumeControl.getValue();
-            float newVolume = Math.min(currentVolume + increment, volumeControl.getMaximum()); // Ensure it doesn't exceed the max value
+            float newVolume = Math.min(currentVolume + increment, volumeControl.getMaximum());
             volumeControl.setValue(newVolume);
             System.out.println("Increased Volume: " + newVolume);
         } else {
@@ -71,7 +71,7 @@ public class SoundManager {
     public void decreaseVolume(float decrement) {
         if (volumeControl != null) {
             float currentVolume = volumeControl.getValue();
-            float newVolume = Math.max(currentVolume - decrement, volumeControl.getMinimum()); // Ensure it doesn't go below the min value
+            float newVolume = Math.max(currentVolume - decrement, volumeControl.getMinimum());
             volumeControl.setValue(newVolume);
             System.out.println("Decreased Volume: " + newVolume);
         } else {
