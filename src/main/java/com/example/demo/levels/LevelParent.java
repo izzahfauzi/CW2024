@@ -8,17 +8,15 @@ import javafx.util.Duration;
 import com.example.demo.ActiveActorDestructible;
 import com.example.demo.actors.UserPlane;
 import com.example.demo.actors.FighterPlane;
-import com.example.demo.actors.Boss;
+import com.example.demo.actors.CollisionsManager;
 import com.example.demo.audio.SoundEffectsManager;
 import com.example.demo.powerup.PowerUpManager;
-import com.example.demo.powerup.GainHeart;
 import javafx.animation.*;
+import javafx.scene.image.*;
+import javafx.scene.input.*;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.image.*;
-import javafx.scene.input.*;
-
 
 public abstract class LevelParent extends Observable {
 
@@ -39,27 +37,24 @@ public abstract class LevelParent extends Observable {
 	private final List<ActiveActorDestructible> userProjectiles;
 	private final List<ActiveActorDestructible> enemyProjectiles;
 	private int currentNumberOfEnemies;
+
 	private final LevelView levelView;
 	private final LevelViewLevelBoss levelViewLevelBoss;
+
 	private boolean isPaused = false;
+
 	private SoundEffectsManager soundEffectsManager;
+	private final PowerUpManager powerUpManager;
+	private final CollisionsManager collisionsManager;
+
 	private static final String SHOOT = "/com/example/demo/audios/sound effects/Gun.wav";
 	private static final String WIN = "/com/example/demo/audios/sound effects/Win.wav";
-	private static final String POWER_UP = "/com/example/demo/audios/sound effects/Boost.wav";
-	private static final String HIT = "/com/example/demo/audios/sound effects/Hurt.wav";
-	private static final String ENEMY_HIT = "/com/example/demo/audios/sound effects/Hurt.wav";
+
 	protected abstract void initializeFriendlyUnits();
-
 	protected abstract void checkIfGameOver();
-
 	protected abstract void spawnEnemyUnits();
-
 	protected abstract LevelView instantiateLevelView();
 	protected abstract LevelViewLevelBoss instantiateLevelViewLevelBoss();
-	private final PowerUpManager powerUpManager;
-
-
-
 
 	public LevelParent(String backgroundImageName, double screenHeight, double screenWidth, int playerInitialHealth) {
 		this.root = new Group();
@@ -79,8 +74,8 @@ public abstract class LevelParent extends Observable {
 		this.levelViewLevelBoss = instantiateLevelViewLevelBoss();
 		this.currentNumberOfEnemies = 0;
 		this.powerUpManager = new PowerUpManager(root, user);
-
 		this.soundEffectsManager = new SoundEffectsManager();
+		this.collisionsManager = new CollisionsManager(root, user, soundEffectsManager, powerUpManager);
 
 		initializeTimeline();
 		friendlyUnits.add(user);
@@ -122,13 +117,16 @@ public abstract class LevelParent extends Observable {
 		updateActors();
 		generateEnemyFire();
 		updateNumberOfEnemies();
-		handleEnemyPenetration();
-		handleUserProjectileCollisions();
-		handleEnemyProjectileCollisions();
-		handlePlaneCollisions();
 		removeAllDestroyedActors();
 		updateLevelView();
 		checkIfGameOver();
+
+		collisionsManager.handleUserProjectileCollisions(userProjectiles, enemyUnits);
+		collisionsManager.handleEnemyProjectileCollisions(enemyProjectiles, friendlyUnits);
+		collisionsManager.handlePlaneCollisions(friendlyUnits, enemyUnits);
+		collisionsManager.handlePowerUpCollisions();
+		collisionsManager.handleEnemyPenetration(enemyUnits, screenWidth);
+
 		powerUpManager.spawnPowerUp();
 		powerUpManager.updatePowerUps();
 		powerUpManager.checkForCollisions();
@@ -148,7 +146,6 @@ public abstract class LevelParent extends Observable {
 		if (!root.getChildren().contains(background)){
 			root.getChildren().add(background);
 		}
-
 		initializeControls();
 	}
 
@@ -232,84 +229,6 @@ public abstract class LevelParent extends Observable {
 		List<ActiveActorDestructible> destroyedActors = actors.stream().filter(actor -> actor.isDestroyed()).collect(Collectors.toList());
 		root.getChildren().removeAll(destroyedActors);
 		actors.removeAll(destroyedActors);
-	}
-
-	private void handlePlaneCollisions() {
-		for (ActiveActorDestructible friendly : friendlyUnits) {
-			for (ActiveActorDestructible enemy : enemyUnits) {
-				if (friendly.getBoundsInParent().intersects(enemy.getBoundsInParent())) {
-					soundEffectsManager.playSound(HIT);
-					if (enemy instanceof Boss) {
-						user.takeDamage();
-						if (userIsDestroyed()) {
-							loseGame();
-							return;
-						}
-					} else {
-						enemy.takeDamage();
-						friendly.takeDamage();
-					}
-				}
-			}
-		}
-
-		List<ActiveActorDestructible> toRemove = new ArrayList<>();
-		for (ActiveActorDestructible powerUp : powerUpManager.getActivePowerUps()) {
-			if (user.getBoundsInParent().intersects(powerUp.getBoundsInParent())) {
-				if (powerUp instanceof GainHeart) {
-					user.gainHealth(1);
-					soundEffectsManager.playSound(POWER_UP);
-				}
-				toRemove.add(powerUp);
-			}
-		}
-		for (ActiveActorDestructible powerUp : toRemove) {
-			powerUpManager.getActivePowerUps().remove(powerUp);
-			root.getChildren().remove(powerUp);
-		}
-	}
-
-	private void handleUserProjectileCollisions() {
-			for (ActiveActorDestructible projectile : userProjectiles){
-				for (ActiveActorDestructible enemy : enemyUnits){
-					if (projectile.getBoundsInParent().intersects(enemy.getBoundsInParent())){
-						enemy.takeDamage();
-						projectile.destroy();
-						soundEffectsManager.playSound(ENEMY_HIT);
-						if (enemy.isDestroyed()){
-							user.incrementKillCount();
-						}
-					}
-				}
-		}
-	}
-
-	private void handleEnemyProjectileCollisions() {
-		handleCollisions(enemyProjectiles, friendlyUnits);
-	}
-
-	private void handleCollisions(List<ActiveActorDestructible> actors1,
-			List<ActiveActorDestructible> actors2) {
-		for (ActiveActorDestructible actor : actors2) {
-			for (ActiveActorDestructible otherActor : actors1) {
-				if (actor.getBoundsInParent().intersects(otherActor.getBoundsInParent())) {
-					actor.takeDamage();
-					otherActor.takeDamage();
-					soundEffectsManager.playSound(HIT);
-				}
-			}
-		}
-	}
-
-	private void handleEnemyPenetration() {
-		for (ActiveActorDestructible enemy : enemyUnits) {
-			if (enemy.getLayoutX() + enemy.getTranslateX() > screenWidth) {
-				user.takeDamage();
-				enemy.destroy();
-				updateNumberOfEnemies();
-				soundEffectsManager.playSound(HIT);
-			}
-		}
 	}
 
 	private void updateNumberOfEnemies() {

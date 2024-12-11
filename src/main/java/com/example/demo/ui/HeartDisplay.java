@@ -26,7 +26,7 @@ public class HeartDisplay {
 		container.setLayoutX(containerXPosition);
 		container.setLayoutY(containerYPosition);
 	}
-	
+
 	private void initializeHearts() {
 		for (int i = 0; i < numberOfHeartsToDisplay; i++) {
 			ImageView heart = new ImageView(new Image(getClass().getResource(HEART_IMAGE_NAME).toExternalForm()));
@@ -47,11 +47,12 @@ public class HeartDisplay {
 			container.getChildren().add(heart);
 		}
 
-		while (container.getChildren().size() > heartsRemaining) {
-			container.getChildren().remove(container.getChildren().size() - 1);
+		for (int i = currentNumberOfHearts - 1; i >= heartsRemaining; i--) {
+			if (i >= 0 && i < container.getChildren().size()) {
+				container.getChildren().remove(i);
+			}
 		}
 	}
-
 
 	public HBox getContainer() {
 		return container;
