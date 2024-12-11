@@ -12,7 +12,7 @@ import javafx.stage.Stage;
 import com.example.demo.levels.LevelParent;
 import com.example.demo.menus.MenuParent;
 import com.example.demo.transition.TransitionParent;
-//refactoring4
+
 public class Controller implements Observer {
 
 	private static final String HOME_MENU = "com.example.demo.menus.HomeMenu";
