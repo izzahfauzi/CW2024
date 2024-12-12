@@ -3,6 +3,7 @@ package com.example.demo.menus;
 import javafx.stage.Stage;
 import javafx.event.EventHandler;
 import javafx.event.ActionEvent;
+import javafx.scene.image.ImageView;
 
 public class HomeMenu extends MenuParent {
     private static final String BACKGROUND_IMAGE_NAME = "/com/example/demo/images/homemenu.png";
@@ -73,5 +74,10 @@ public class HomeMenu extends MenuParent {
     private void exitGame() {
         System.exit(0);
     }
+
+    public ImageView getBackground() {
+        return this.background;
+    }
+
 
 }
