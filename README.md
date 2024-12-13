@@ -68,6 +68,7 @@
    - Speed Boost: A power-up that temporarily increases the user's movement speed. 
    - Shield: A power-up that grants temporary invincibility to protect the user plane from damage.
    - Double Damage Bullets: A power-up that increases the damage dealt to enemies for limited time
+   - Applying Single Responsibility Principle (SRP) in more classes
 
 **Reasons for Not Implementing**: Limited time constraints prevented the addition of these features. 
 
