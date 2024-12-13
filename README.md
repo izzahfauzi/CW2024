@@ -33,7 +33,7 @@
 
 3. **Levels**:  
    - **Level 2**: Introduces a new type of plane that moves both vertically and horizontally to the left. This plane is faster and has a health of 3.
-   - **Level 3**: Introduces a new type of plane that moves horizontally to the left. It is slower compared to previous planes but has a higher health of 5, requiring more hits to be defeated.  
+   - **Level 3**: Introduces a new type of plane that moves horizontally to the left. It is slower compared to previous planes but has a higher health of 7, requiring more hits to be defeated.  
 
 4. **Boss Health Bar**:  
    - Displays the boss's health as a health bar, which decreases as the boss’s health decreases.
@@ -521,6 +521,173 @@
 
 
 ### Modified Classes:
+
+## 1. Controller.java
+
+### 1.1 Transition from a Single Level to Multiple Menus and Levels
+#### Old Code:
+- The controller was specifically designed to handle only the initial game level (`LEVEL_ONE_CLASS_NAME`).
+- The game launched directly into the first level, with no menu or transition screens.
+
+#### New Code:
+- The controller was updated to handle multiple game states (home menu, pause menu, level transitions, etc.).
+- The `launchGame` method was updated to show the home menu instead of directly jumping to a level (`goToMenu(HOME_MENU)`).
+- New methods were added to:
+  - Navigate to menus (`goToMenu`),
+  - Handle transitions (`showTransitionPrompt`),
+  - Load game levels dynamically based on the class name provided.
+- This allows for flexible transitions between the game’s various menus, levels, and transition screens.
+
+### 1.2 Handling of the Current Level
+#### Old Code:
+- The old code did not track or manage the current level explicitly.
+- It simply loaded the first level and did not store a reference to the current level.
+
+#### New Code:
+- A `currentLevel` field was introduced to track the currently active game level.
+- This ensures that the controller can pass the current level to the menu screens, enabling features like pause functionality.
+
+### 1.3 Error Handling
+#### Old Code:
+- The error handling in the old code was basic. 
+- If an error occurred during class loading or instantiation, the error message was displayed in an alert without much detail.
+
+#### New Code:
+- The error handling was improved slightly.
+- In case of exceptions, error details are logged to the console, and an alert is shown with the exception stack trace.
+- This helps developers diagnose issues better during the development and debugging process.
+
+### 1.4 Additional Methods for Menu and Transition Management
+#### Old Code:
+- The old code only had the `goToLevel` method for navigating to the first level.
+
+#### New Code:
+- Added `goToMenu`, `showTransitionPrompt`, and updated `update` to manage transitions between different game states dynamically.
+- The `update` method now checks whether the name passed corresponds to a menu, transition, or level and acts accordingly by calling the appropriate methods.
+
+
+## 2. Boss.java
+
+### 2.1 Projectile Firing
+#### Old Code:
+- The Boss fired a projectile randomly based on a defined fire rate.
+
+#### New Code:
+- The projectile firing logic remains similar, but the `fireProjectile` method now returns a `BossProjectile` with an updated spawn position.
+- The Boss fires projectiles based on its fire rate, determined randomly each frame.
+
+### 2.2 Health Management
+#### Old Code:
+- Health was managed by a simple method, and the Boss could take damage when not shielded.
+
+#### New Code:
+- The health is updated visually with the `levelView.updateBossHealth` method when the Boss takes damage.
+- Damage is only taken if the shield is not active.
+
+
+## 3. EnemyPlane.java
+
+### 3.1 Overview of the Class
+#### Old Code:
+- The `EnemyPlane` class represented a simple enemy with basic horizontal movement and projectile firing.
+- It only supported one type of enemy with fixed attributes such as health and velocity.
+- The movement was strictly horizontal with no variation.
+
+#### New Code:
+- The `EnemyPlane` class now supports multiple types of enemy planes: **normal**, **special**, and **tank**.
+- Each type has distinct attributes such as health and horizontal velocity:
+  - **Normal**: Basic enemy plane with standard health and velocity.
+  - **Special**: Includes a vertical movement pattern that shuffles up and down
+  - **Tank**: A stronger enemy with higher health and slower horizontal velocity.
+- The plane is destroyed if it moves outside the screen bounds.
+
+### 3.2 Handling Multiple Types of Enemy Planes
+#### Old Code:
+- There was no distinction between types of enemy planes, and all enemies had the same attributes (health, velocity).
+- The class did not account for specialized movement or firing patterns.
+
+#### New Code:
+- The `EnemyPlane` class now has logic to differentiate between normal, special, and tank enemies.
+- Each type of enemy is configured with its specific attributes:
+  - **Normal** enemies have a velocity of `-6` and 1 health point.
+  - **Special** enemies have a velocity of `-9` and 3 health points, with a vertical movement pattern.
+  - **Tank** enemies have a velocity of `-4` and 7 health points.
+- These attributes are set using methods: `setNormalEnemyAttributes()`, `setSpecialEnemyAttributes()`, and `setTankPlaneAttributes()`.
+
+### 3.3 Handling Screen Boundaries and Destruction
+#### Old Code:
+- The enemy plane was not destroyed when it went out of bounds, and there was no handling for boundaries.
+
+#### New Code:
+- The `updatePosition()` method checks if the enemy plane is out of bounds and calls `destroy()` to remove the enemy plane if it is out of bounds.This is done so that the number of enemies on the screen can change dynamically. The game logic ensures that new enemies will spawn as long as there are not more than 5 enemies currently on screen. When an enemy goes off-screen and is destroyed, it frees up space for new enemies to appear, maintaining the flow of the game.
+
+### 3.6 Updating Actor State
+#### Old Code:
+- The `updateActor()` method simply updated the plane’s position horizontally.
+
+#### New Code:
+- The `updateActor()` method now calls `updatePosition()` to handle both horizontal and vertical movements (for special enemies), ensuring the enemy plane’s position is updated correctly.
+
+
+## 4. GameOverImage.java WinImage.java
+
+#### Old Code:
+- The game over and win conditions were displayed using images (`gameOverImage.png` and `winImage.png`).
+- These images were shown directly when the game ended, either after the player lost or won.
+
+#### New Code:
+- The static images for game over and win conditions were replaced with dedicated menus (`winMenu` and `loseMenu`).
+- When the player wins or loses, the game now transitions to the appropriate menu rather than displaying an image.
+- This change allows for a more interactive and dynamic transition after the game ends, where the player can choose to restart or exit the game from the win or lose menu.
+
+
+## 5. LevelParent.java
+
+### 5.1 Improved Scene Initialisation
+#### Old code: 
+- The background and controls were initialised directly within initializeBackground without checks for duplication.
+- Control events were added inline, leading to potential redundancy.
+
+#### New code: 
+- Background initialisation now checks if it has already been added before proceeding.
+- Controls are set up in a separate initializeControls method, ensuring better organisation and clarity.
+
+### 5.2 Centralised Collision Handling (Attempting SRP)
+#### Old code:
+- Collision logic for actors and projectiles was handled directly in LevelParent.
+
+#### New code:
+- Delegated collision handling to a dedicated CollisionsManager. This class manages all collision-related updates and actions. Therefore improves code modularity by encapsulating collision logic in a single class.
+
+
+## 6. UserPlane.java
+
+### 6.1 Movement Boundaries Adjustment
+#### Old code:
+- The vertical boundaries were the only ones set.
+
+#### New code:
+- Horizontal boundaries were added to ensure `UserPlane` stays within the visible area
+
+### 6.3 Horizontal Movements
+#### Old code:
+- Vertical movements were the only form of movement allowed for `UserPlane`.
+- Horizontal movement was not implemented or considered, limiting the plane's movement to the vertical axis only.
+
+#### New code:
+- Horizontal movement has been added to allow the user to move the `UserPlane` left or right.
+- This change provides more control and flexibility to the user by allowing movement in both vertical and horizontal directions.
+
+
+## 7. Renaming and Reorganising into Packages
+- Previously, many classes were not organised into packages, resulting in a flat file structure where all the classes were placed in the root directory.
+- Some class names did not clearly describe their purpose or functionality, making it harder to understand their role in the game.
+
+- Classes have been reorganised into appropriate packages to improve project structure and maintainability. For example:
+  - Classes related to projectiles are moved to a `com.example.demo.projectiles` package. 
+- Several classes have been renamed to better reflect their purpose. For example:
+  - `ShieldImage` was renamed to `ShieldDisplay` to more accurately describe the class's function of displaying the shield.
+
 
 ---
 
