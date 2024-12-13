@@ -77,6 +77,449 @@
 
 ### New Classes:
 
+### com.example.demo.actors
+
+### `CollisionManager.java`: Manages collisions between multiple entities in the game, making sure proper interactions and effects when game objects collide.
+
+**Features**
+
+- Plane Collisions: Detects and processes collisions between the user’s plane and enemy units, applying damage to both.
+- Projectile Handling: Manages interactions between user and enemy projectiles with their respective targets.
+- Power-Up Collection: Handles user interactions with power-ups.
+- Sound Integration: Plays sound effects for various collision scenarios (e.g., hits, power-ups).
+
+**Core Methods**
+
+1. **`handlePlaneCollisions(List<ActiveActorDestructible> friendlyUnits, List<ActiveActorDestructible> enemyUnits)`**  
+   Handles collisions between friendly units (e.g., the user’s plane) and enemy units. Both entities take damage upon collision.
+
+2. **`handleUserProjectileCollisions(List<ActiveActorDestructible> userProjectiles, List<ActiveActorDestructible> enemyUnits)`**  
+   Detects when user projectiles hit enemy units, applying damage, destroying the projectile, and incrementing the player’s kill count when an enemy is destroyed.
+
+3. **`handleEnemyProjectileCollisions(List<ActiveActorDestructible> enemyProjectiles, List<ActiveActorDestructible> friendlyUnits)`**  
+   Processes collisions between enemy projectiles and friendly units, applying damage to both upon contact.
+
+4. **`handlePowerUpCollisions()`**  
+   Manages collisions between the user and power-ups, applying effects (e.g., health gain) and removing the collected power-ups from the game.
+
+### com.example.demo.audio
+
+### `SoundManager.java`: Manages background music and volume control for the game. It loops the audio and has methods that allow user's to control the volume
+
+**Features**
+
+- Singleton Pattern: Ensures only one instance of `SoundManager` is active throughout the game, reducing resource conflicts.
+- Background Music Playback: Plays audio files in a loop.
+- Volume Control: Provides methods to adjust the music volume up or down and set it to a specific level.
+- Default Volume: Automatically sets the background music to a predefined volume level (`DEFAULT_VOLUME`) upon playback.
+- Error Handling: Handles scenarios where the audio file is missing or cannot be played.
+
+**Core Methods**
+
+1. **`getInstance()`**  
+   Retrieves the singleton instance of the `SoundManager` class.  
+
+2. **`PlayMusic(String path)`**  
+   Starts playing the background music from the specified file path. The music loops continuously until stopped.  
+
+3. **`setVolume(float value)`**  
+   Adjusts the music volume to a specific level.  
+
+4. **`increaseVolume(float increment)`**  
+   Increases the volume by a given increment, capped at the maximum allowed volume.  
+
+5. **`decreaseVolume(float decrement)`**  
+   Decreases the volume by a given decrement, down to the minimum allowed volume.  
+
+6. **`getVolume()`**  
+   Retrieves the current volume level.  
+
+7. **`stopMusic()`**  
+   Stops the background music playback.  
+
+### `SoundEffectsManager.java`: Manages and plays sound effects in the game. 
+
+**Features**
+
+- Sound Effect Playback: Loads and plays sound effects from audio files using the Java `Clip` class.
+- Resource Handling: Fetches audio files from specified paths and ensures proper playback handling.
+- Error Handling: Provides feedback when audio files are missing or an error occurs during playback.
+
+**Core Methods**
+
+1. **`playSound(String path)`**  
+   Plays a sound effect from the specified file path. If the audio file cannot be found or played, an error message is displayed in the console.
+
+### com.example.demo.levels
+
+### `LevelTwo.java`: The 'LevelTwo' class represents the game's second level, such as unique gameplay mechanisms such as opponent plane spawning, kill count-based progression, and checking for game-over circumstances.
+
+**Features**
+
+- Background and Theme: Sets a unique background for the level using `sky2.png`.
+- Enemy Spawning: Spawns enemies based on probabilities, including special enemy types.
+- Kill-Based Progression: Players need to achieve a higher kill count (15 kills) to advance.
+- Health System: The player's health is initialised and managed for this level.
+- Transition Mechanics: Displays a transition prompt when advancing to the next level.
+
+**Core Methods**
+
+1. **`checkIfGameOver()`**
+   - Ends the game if the user's plane is destroyed.
+   - Initiates a transition to the next level when the required kill count is reached.
+
+2. **`initializeFriendlyUnits()`**
+   - Ensures the user's plane is added to the game scene.
+
+3. **`spawnEnemyUnits()`**
+   - Spawns enemies based on the user’s current kill count and predefined probabilities.
+
+4. **`instantiateLevelView()`**
+   - Creates and returns the level view for Level Two, including a health display.
+
+5. **`instantiateLevelViewLevelBoss()`**
+   - Returns `null` as this level does not feature a boss.
+
+6. **`userHasReachedKillTarget()`**
+   - Checks if the player has achieved the required number of kills to progress.
+
+### `LevelThree.java`: The 'LevelThree' class reflects the game's third level, which utilises previous levels' principles while introducing new challenges such as tank enemy planes. This level focusses on kill count-based progression and checks for game-ending circumstances.
+
+**Features**
+
+- Background and Theme: Utilises `sky2.png` as the background for a consistent aesthetic.
+- Enemy Spawning: Spawns enemies based on probabilities, including special enemy and tank enemy.
+- Kill-Based Progression: Players need to achieve a higher kill count (20 kills) to advance.
+- Health System: The player's health is initialised and managed for this level.
+- Transition Mechanics: Displays a transition prompt when advancing to the next level.
+
+**Core Methods**
+
+1. **`checkIfGameOver()`**
+   - Ends the game if the user's plane is destroyed.
+   - Initiates a transition to the next level when the required kill count is reached.
+
+2. **`initializeFriendlyUnits()`**
+   - Ensures the user's plane is added to the game scene
+
+3. **`spawnEnemyUnits()`**
+   - Spawns enemies based on the user’s current kill count and predefined probabilities.
+
+4. **`instantiateLevelView()`**
+   - Creates and returns the level view for Level Two, including a health display.
+
+5. **`instantiateLevelViewLevelBoss()`**
+   - Returns `null` as this level does not feature a boss.
+
+6. **`userHasReachedKillTarget()`**
+   - Checks if the player has achieved the required number of kills to progress.
+  
+### com.example.demo.menus
+
+### `MenuParent.java`: The 'MenuParent' class acts as a base for all menu screens in the game. It handles common tasks including background configuration, button generation, audio control, and navigating between menus and stages.
+
+**Features**
+
+- Background Management: Handles setting and displaying background images for menus.
+- Button Creation: Simplifies adding buttons with optional hover effects and click event handling.
+- Background Music: Plays music during menu screens, with control for stopping and resuming.
+- Navigation: Provides methods for transitioning between menus and levels.
+- Pause/Resume: Controls game state with pause and resume functionality.
+
+**Core Methods**
+
+1. **`Scene initializeScene()`**
+   - Returns the scene object for the menu.
+
+2. **`protected void initializeControls()`**
+   - Placeholder for adding custom controls in subclasses.
+
+3. **`protected Button buttonImage(String buttonImagePath, String hoverImagePath, EventHandler eventHandler, double posX, double posY, double buttonWidth, double buttonHeight)`**
+   - Creates a button with an image, hover effect (optional), and click action.
+
+4. **`void resumeGame()`**
+   - Resumes the game by playing the timeline and resetting the pause flag.
+
+5. **`void goToNextLevel(String levelName)`**
+   - Transitions to the specified level and stops background music.
+
+6. **`void goToMenu(String menuName)`**
+   - Navigates to the specified menu and stops background music.
+
+7. **`protected void stopBackgroundMusic()`**
+   - Stops the background music if active.
+
+### `HomeMenu.java`: The class 'HomeMenu' shows the game's home screen. It extends the 'MenuParent' class to offer the main menu functionality, which includes buttons for beginning the game, navigating to other menus (Info and Settings), and ending the game.
+
+**Features**
+
+- Play Button: Navigates to the first game level.
+- Exit Button: Exits the application.
+- Info Button: Navigates to the information/how to play menu.
+- Settings Button: Navigates to the settings menu.
+- Custom Background: Displays a background image specific to the home menu.
+- Background Music: Plays music when the home menu is active.
+
+**Core Methods**
+
+1. **`private void exitGame()`**
+   - Exits the application by terminating the program.
+
+2. **`public ImageView getBackground()`**
+   - Returns the background image of the home menu.
+  
+### `InfoMenu.java`: The class 'InfoMenu' shows the game's information screen. It extends the 'MenuParent' class and adds functionality for showing game information, including a background image, background music, and a button to return to the home menu.
+
+**Features**
+
+- Home Button: Navigates back to the home menu.
+- Custom Background: Displays a background image specific to the information menu.
+- Background Music: Plays music when the information menu is active.
+
+**Core Methods**
+
+1. **`protected void initializeControls()`**
+   - Initializes the controls for the info menu, such as the home button.
+   - The home button is placed at the corner of the screen and triggers navigation back to the home menu.
+
+### `SettingsMenu.java`: The 'SettingsMenu' class shows the screen where users can control the game's audio settings, such as increasing or decreasing volume. It also allows you to navigate back to the home menu.
+
+**Features**
+
+- Volume Controls: Buttons to increase or decrease the game’s volume.
+- Navigation: A button to navigate back to the home menu.
+- Sound Management: Uses the `SoundManager` to control the volume levels.
+
+**Core Methods**
+
+1. **`public SettingsMenu(Stage stage, double screenHeight, double screenWidth)`**
+   - Initializes the settings menu with the given stage and screen dimensions.
+   - Sets up the `SoundManager` instance for volume control and calls `initializeControls()` to set up the buttons.
+
+2. **`protected void initializeControls()`**
+   - Sets up the buttons for adjusting the volume and the home button for navigation.
+   - The increase and decrease volume buttons adjust the volume by `VOLUME_INCREMENT`.
+
+3. **`private void printVolumeLevel()`**
+   - Prints the current volume level to the console after adjusting it using the volume buttons.
+  
+### `PauseMenu.java`: The 'PauseMenu' class shows the game's pause menu, which appears during gameplay. It allows users to resume the game or return to the main menu. The class handles user input, such as keyboard and button presses, and manages the transition from the pause menu to gameplay.
+
+**Features**
+
+- Resume Game: Allows users to resume gameplay by pressing the Spacebar or clicking the "Resume" button.
+- Navigation: A button to navigate back to the home menu.
+- Key Press Handling: Listens for the Spacebar key press to resume the game.
+- Level Transition: Manages the transition back to the current level when resuming the game.
+
+**Core Methods**
+
+1. **`public PauseMenu(Stage stage, double screenHeight, double screenWidth, LevelParent currentLevel)`**
+     - Initializes the pause menu with the given stage, screen dimensions, and current level.
+     - Calls `initializeControls()` to set up user interface elements, including key press handling.
+
+2. **`protected void initializeControls()`**
+     - Sets up the key press event listener for resuming the game (Spacebar) and the home button for navigation.
+     - The home button leads back to the home menu.
+
+3. **`public void resumeGame()`**
+     - Resumes the game by transitioning to the current level and stopping the background music.
+
+4. **`private void transitionToLevel()`**
+     - Transitions to the current level by setting the scene to the level's scene and starting the game.
+     - If the current level is `null`, no transition occurs.
+
+### `WinMenu.java`: The 'WinMenu' class shows the menu that appears after the player wins the game. It includes a button that allows players to return to the home menu after finishing the game.
+
+**Features**
+
+- Win Screen: Displays the win screen after the player wins the game.
+- Navigation: A button to navigate back to the home menu after winning.
+
+**Core Methods**
+
+1. **`public WinMenu(Stage stage, double screenHeight, double screenWidth)`**
+   - Initializes the win menu with the specified stage, screen dimensions, and background music.
+   - Calls `initializeControls()` to set up the UI elements, including the home button.
+
+2. **`protected void initializeControls()`**
+   - Sets up the home button to allow navigation back to the home menu.
+   - The button is placed at the top right of the screen, and clicking it takes the player to the home menu.
+
+### `LoseMenu.java`: The 'LoseMenu' class shows the game over screen that appears when the player loses the game. It allows the player to navigate to the home menu or the next level by pressing the space key.
+
+**Features**
+
+- Game Over Screen: Displays a "Game Over" screen after the player loses the game.
+- Keyboard Navigation: The space key allows the player to restart to level 1.
+- Home Button: A button that navigates the player back to the home menu.
+
+**Core Methods**
+
+1. **`public LoseMenu(Stage stage, double screenHeight, double screenWidth)`**
+   - Initializes the lose menu with the specified stage, screen dimensions, and background music.
+   - Calls `initializeControls()` to set up the UI elements, including the home button and keyboard input.
+
+2. **`protected void initializeControls()`**
+   - Sets up keyboard controls to allow the player to transition to the level 1 by pressing the space key.
+   - Sets up the home button to allow the player to return to the home menu.
+
+### com.example.demo.powerup
+
+### `PowerUpManager`: The `PowerUpManager` class is responsible for managing power-ups in the game, such as spawning, updating, and handling collisions with the player's plane. It ensures that power-ups like hearts are created, displayed, and collected when the player collides with them.
+
+**Features**
+
+- Spawn Power-Ups: Generates power-ups at random locations within the defined screen bounds.
+- Collision Detection: Detects collisions between the player's plane and power-ups. If a collision is detected, the corresponding power-up is activated.
+- Power-Up Update: Updates the list of active power-ups, removing destroyed ones from the scene.
+
+**Core Methods**
+
+1. **`public PowerUpManager(Group root, UserPlane user)`**
+     - Initializes the PowerUpManager with the root group and the player's plane.
+     - Creates an empty list for tracking active power-ups.
+
+2. **`public void spawnPowerUp()`**
+     - Spawns a new power-up at a random location within the defined bounds with a given spawn chance.
+     - The power-up is added to the scene and the active power-ups list.
+
+3. **`public void updatePowerUps()`**
+     - Updates the active power-ups list by removing any power-ups that have been destroyed. The destroyed power-ups are also removed from the scene.
+
+4. **`public void checkForCollisions()`**
+     - Checks if any active power-ups have collided with the player's plane. If a collision occurs, the power-up is activated (e.g., increases health for a `GainHeart`), and the power-up is removed from both the list and the scene.
+
+5. **`public List<ActiveActorDestructible> getActivePowerUps()`**
+     - Returns a list of the currently active power-ups.
+     - A list of `ActiveActorDestructible` objects representing the active power-ups.
+
+### `GainHeart`: The 'GainHeart' class indicates a health power-up in the game that, when gained, increases the user's health. When the player collides with the power-up, their health increases and the power-up is destroyed.
+
+**Features**
+
+- Health Boost: When collected, the heart power-up increases the user's health by a fixed amount.
+- Heart Icon: The power-up is visually represented by a heart image.
+- Destruction: After being collected, the power-up is destroyed, and its icon is removed from the screen.
+
+**Core Methods**
+
+1. **`public GainHeart(double x, double y, UserPlane user)`**
+     - Constructs the `GainHeart` power-up at the specified position and associates it with the `UserPlane` instance.
+
+2. **`public void plusHealth()`**
+     - Increases the health of the `UserPlane` by the amount specified in `HEART_GAIN` (1).
+     - After collection, the power-up is destroyed.
+
+3. **`public void destroy()`**
+     - Destroys the power-up and removes it from the scene.
+     - Prints a log message indicating the destruction of the power-up.
+
+4. **`public void updateActor()`**
+     - This method is not implemented for `GainHeart` since the power-up does not have dynamic updates after creation (it’s destroyed upon collection).
+
+5. **`public void updatePosition()`**
+     - This method is not implemented for `GainHeart` as the power-up’s position does not change after its creation.
+
+6. **`public void takeDamage()`**
+     - This method is not implemented for `GainHeart`, as the power-up cannot take damage.
+
+### com.example.demo.transition
+
+### `TransitionParent.java`: The 'TransitionParent' class is the base class for all transition screens in the game, including level transitions and scene changes. It is in charge of configuring the transition scene, including the background picture. 
+
+**Features**
+
+- Background Image: The class handles setting up and displaying a background image for the transition screen.
+- Observable: The class extends `Observable` to notify observers when transitioning to the next level or scene.
+
+**Core Methods**
+
+1. **`public TransitionParent(Stage stage, String backgroundImageName, double screenHeight, double screenWidth)`**
+     - Initializes the transition screen with the specified parameters, including the background image and the scene setup.
+
+2. **`public Scene initializeScene()`**
+     - Initializes and returns the scene that will be displayed on the stage during the transition.
+
+3. **`protected void initializeControls()`**
+     - This is a placeholder method intended to be overridden by subclasses. It allows for adding specific controls for each transition screen.
+
+4. **`private void initializeBackground()`**
+     - Initializes the background image. Ensures that the image preserves its aspect ratio and is focus traversable.
+
+5. **`public void goToNextLevel(String levelName)`**
+     - Triggers the transition to the next level by notifying observers.
+
+### `TransitionOne.java`:  The 'TransitionOne' class shows the game's first transition screen. It extends the 'TransitionParent' class and manages the controls and actions for this specific transition, including responding to user input (the Enter key) to proceed to the next level.
+
+**Features**
+- Background Image: Displays a specific background image for the transition screen.
+- Key Event Handling: Listens for the Enter key to trigger a transition to the next level (LevelTwo).
+
+**Core Methods**
+
+1. **`public TransitionOne(Stage stage, double screenHeight, double screenWidth)`**
+     - Constructs the `TransitionOne` screen and initializes it with the specified stage and screen dimensions, as well as the background image.
+
+2. **`protected void initializeControls()`**
+     - Initializes the controls for the transition screen. Specifically, it sets up a key listener that listens for the Enter key. When the Enter key is pressed, the game transitions to the next level (LevelTwo).
+
+### `TransitionTwo.java`:  The 'TransitionTwo' class shows the game's second transition screen. It extends the 'TransitionParent' class and manages the controls and actions for this specific transition, including responding to user input (the Enter key) to proceed to the next level.
+
+**Features**
+- Background Image: Displays a specific background image for the transition screen.
+- Key Event Handling: Listens for the Enter key to trigger a transition to the next level (LevelThree).
+
+**Core Methods**
+
+1. **`public TransitionTwo(Stage stage, double screenHeight, double screenWidth)`**
+     - Constructs the `TransitionTwo` screen and initializes it with the specified stage and screen dimensions, as well as the background image.
+
+2. **`protected void initializeControls()`**
+     - Initializes the controls for the transition screen. Specifically, it sets up a key listener that listens for the Enter key. When the Enter key is pressed, the game transitions to the next level (LevelThree).
+
+### `TransitionThree.java`:  The 'TransitionThree' class shows the game's third transition screen. It extends the 'TransitionParent' class and manages the controls and actions for this specific transition, including responding to user input (the Enter key) to proceed to the next level.
+
+**Features**
+- Background Image: Displays a specific background image for the transition screen.
+- Key Event Handling: Listens for the Enter key to trigger a transition to the next level (LevelBoss).
+
+**Core Methods**
+
+1. **`public TransitionThree(Stage stage, double screenHeight, double screenWidth)`**
+     - Constructs the `TransitionThree` screen and initializes it with the specified stage and screen dimensions, as well as the background image.
+
+2. **`protected void initializeControls()`**
+     - Initializes the controls for the transition screen. Specifically, it sets up a key listener that listens for the Enter key. When the Enter key is pressed, the game transitions to the next level (LevelBoss).
+
+### com.example.demo.ui
+
+### `BossHealthDisplay.java`: The 'BossHealthDisplay' class represents the boss's health meter in the game. It displays the boss's current health and dynamically changes the health bar whenever it gets hit, receiving damage.
+
+**Features**
+
+- Health Bar: A visual representation of the boss's health.
+- Dynamic Update: The health bar's width is updated based on the current health of the boss.
+- Customizable Position: You can set the position of the health bar on the screen.
+
+**Core Methods**
+
+1. **`public BossHealthDisplay(double xPosition, double yPosition, double maxHealth)`**
+     - Initializes the boss health display, setting its maximum health and initial health.
+
+2. **`private void initializeContainer()`**
+     - Initializes the container for the health bar and its background.
+
+3. **`private void initializeBossHealth()`**
+     - Initializes the health bar and its background, and adds them to the container.
+
+4. **`public void updateHealth(double newHealth)`**
+     - Updates the health bar's width based on the current health. The health bar shrinks as the boss takes damage.
+
+5. **`public StackPane getContainer()`**
+     - Returns the container holding the health bar and its background. This container can be added to a scene to display the health bar.
+
+
 ### Modified Classes:
 
 ---
