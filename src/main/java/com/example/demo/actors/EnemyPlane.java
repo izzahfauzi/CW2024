@@ -7,6 +7,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Represents an enemy plane in the game, extending the {@link FighterPlane} class.
+ * <p>
+ * The {@link EnemyPlane} class is responsible for the movement, firing, and behaviour of the enemy planes in the game.
+ * It includes different types of enemy planes (normal, special, and tank) with varying health, velocity, and movement patterns.
+ * </p>
+ */
 public class EnemyPlane extends FighterPlane {
 
 	private static final String ENEMY_IMAGE = "enemyplane1.png";
@@ -29,6 +36,14 @@ public class EnemyPlane extends FighterPlane {
 	private int consecutiveMovesInSameDirection;
 	private int indexOfCurrentMove;
 
+	/**
+	 * Constructs an enemy plane with the specified initial position and type (normal, special, or tank).
+	 *
+	 * @param initialXPos the initial horizontal position of the enemy plane
+	 * @param initialYPos the initial vertical position of the enemy plane
+	 * @param specialEnemy whether the enemy is a special type
+	 * @param tankEnemy whether the enemy is a tank type
+	 */
 	public EnemyPlane(double initialXPos, double initialYPos, boolean specialEnemy, boolean tankEnemy) {
 		super(ENEMY_IMAGE, IMAGE_HEIGHT, initialXPos, initialYPos, INITIAL_HEALTH);
 		this.specialEnemy = specialEnemy;
@@ -44,21 +59,34 @@ public class EnemyPlane extends FighterPlane {
 		}
 	}
 
+	/**
+	 * Sets the attributes for a normal enemy plane, including its health and horizontal velocity.
+	 */
 	private void setNormalEnemyAttributes() {
 		this.health = INITIAL_HEALTH;
 		this.horizontalVelocity = INITIAL_HORIZONTAL_VELOCITY;
 	}
 
+	/**
+	 * Sets the attributes for a special enemy plane, including its health and horizontal velocity.
+	 */
 	private void setSpecialEnemyAttributes() {
 		this.health = SPECIAL_INITIAL_HEALTH;
 		this.horizontalVelocity = SPECIAL_HORIZONTAL_VELOCITY;
 	}
 
+	/**
+	 * Sets the attributes for a tank enemy plane, including its health and horizontal velocity.
+	 */
 	private void setTankPlaneAttributes() {
 		this.health = TANK_INITIAL_HEALTH;
 		this.horizontalVelocity = TANK_HORIZONTAL_VELOCITY;
 	}
 
+	/**
+	 * Updates the position of the enemy plane, moving it horizontally and vertically (if it's a special enemy).
+	 * If the enemy plane goes out of bounds, it is destroyed.
+	 */
 	@Override
 	public void updatePosition() {
 		moveHorizontally(horizontalVelocity);
@@ -72,6 +100,12 @@ public class EnemyPlane extends FighterPlane {
 		}
 	}
 
+	/**
+	 * Moves the enemy plane vertically within the screen bounds.
+	 * If the plane goes out of the allowed vertical range, it resets its vertical position.
+	 *
+	 * @param verticalVelocity the velocity used for vertical movement
+	 */
 	private void moveVertically(int verticalVelocity) {
 		double initialTranslateY = getTranslateY();
 		setTranslateY(getTranslateY() + verticalVelocity);
@@ -82,6 +116,9 @@ public class EnemyPlane extends FighterPlane {
 		}
 	}
 
+	/**
+	 * Initializes the move pattern for a special enemy plane, which can move up, down, or stay still.
+	 */
 	private void initializeMovePattern() {
 		movePattern = new ArrayList<>();
 		movePattern.add(VERTICAL_VELOCITY);
@@ -92,6 +129,12 @@ public class EnemyPlane extends FighterPlane {
 		indexOfCurrentMove = 0;
 	}
 
+	/**
+	 * Determines the next vertical movement based on the current move pattern.
+	 * The move pattern is shuffled after a set number of consecutive moves in the same direction.
+	 *
+	 * @return the next vertical velocity in the move pattern
+	 */
 	private int getNextMove() {
 		int currentMove = movePattern.get(indexOfCurrentMove);
 		consecutiveMovesInSameDirection++;
@@ -109,10 +152,21 @@ public class EnemyPlane extends FighterPlane {
 		return currentMove;
 	}
 
+	/**
+	 * Returns the screen width used to check if the enemy plane is out of bounds.
+	 *
+	 * @return the screen width
+	 */
 	protected double getScreenWidth() {
 		return screenWidth;
 	}
 
+	/**
+	 * Fires a projectile from the enemy plane.
+	 * If the random chance is below the fire rate, a new {@link EnemyProjectile} is created and returned.
+	 *
+	 * @return a new enemy projectile or null if the fire rate condition is not met
+	 */
 	@Override
 	public ActiveActorDestructible fireProjectile() {
 		if (Math.random() < FIRE_RATE) {
@@ -123,6 +177,9 @@ public class EnemyPlane extends FighterPlane {
 		return null;
 	}
 
+	/**
+	 * Updates the enemy plane by updating its position.
+	 */
 	@Override
 	public void updateActor() {
 		updatePosition();
